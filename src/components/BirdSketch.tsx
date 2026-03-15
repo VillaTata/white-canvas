@@ -115,6 +115,12 @@ const BirdSketch = () => {
       p.draw = () => {
         p.clear();
 
+        // Decay attract point
+        if (attractPoint) {
+          attractPoint.timer--;
+          if (attractPoint.timer <= 0) attractPoint = null;
+        }
+
         for (const bird of birds) {
           // Organic movement - occasional direction changes
           bird.turnTimer--;
