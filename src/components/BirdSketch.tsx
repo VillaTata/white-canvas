@@ -10,6 +10,10 @@ interface Bird {
   wingPhase: number;
   wingSpeed: number;
   trail: { x: number; y: number }[];
+  targetVy: number;
+  turnTimer: number;
+  gliding: boolean;
+  glideTimer: number;
 }
 
 const BirdSketch = () => {
@@ -22,7 +26,7 @@ const BirdSketch = () => {
     const sketch = (p: p5) => {
       const birds: Bird[] = [];
       const NUM_BIRDS = 18;
-      const TRAIL_LENGTH = 20;
+      const TRAIL_LENGTH = 25;
 
       p.setup = () => {
         const canvas = p.createCanvas(
@@ -33,74 +37,134 @@ const BirdSketch = () => {
 
         for (let i = 0; i < NUM_BIRDS; i++) {
           const x = p.random(p.width);
-          const y = p.random(p.height * 0.6);
+          const y = p.random(p.height * 0.5);
           birds.push({
-            x,
-            y,
-            vx: p.random(0.6, 1.5) * (p.random() > 0.5 ? 1 : -1),
+            x, y,
+            vx: p.random(1.0, 2.2) * (p.random() > 0.5 ? 1 : -1),
             vy: p.random(-0.3, 0.3),
-            size: p.random(6, 14),
+            size: p.random(5, 11),
             wingPhase: p.random(p.TWO_PI),
-            wingSpeed: p.random(0.06, 0.12),
+            wingSpeed: p.random(0.08, 0.15),
             trail: Array.from({ length: TRAIL_LENGTH }, () => ({ x, y })),
+            targetVy: 0,
+            turnTimer: p.random(60, 200),
+            gliding: false,
+            glideTimer: p.random(30, 120),
           });
         }
+      };
+
+      const drawBird = (bird: Bird, angle: number, wing: number) => {
+        const s = bird.size;
+
+        p.push();
+        p.translate(bird.x, bird.y);
+        p.rotate(angle);
+
+        // Wing curve amount
+        const wingUp = wing * s * 0.9;
+
+        // Body - subtle tapered shape
+        p.noStroke();
+        p.fill(30, 30, 35, 160);
+        p.beginShape();
+        p.vertex(s * 1.2, 0);       // beak tip
+        p.vertex(s * 0.3, -s * 0.12);
+        p.vertex(-s * 0.6, 0);      // tail
+        p.vertex(s * 0.3, s * 0.12);
+        p.endShape(p.CLOSE);
+
+        // Tail fork
+        p.stroke(30, 30, 35, 130);
+        p.strokeWeight(1.2);
+        p.line(-s * 0.6, 0, -s * 1.1, -s * 0.2);
+        p.line(-s * 0.6, 0, -s * 1.1, s * 0.2);
+
+        // Wings - smooth curved arcs
+        p.noFill();
+        p.strokeWeight(1.8);
+        p.stroke(30, 30, 35, 150);
+
+        // Left wing
+        p.beginShape();
+        p.vertex(s * 0.2, -s * 0.08);
+        p.quadraticVertex(s * 0.1, -s * 0.6 - wingUp, -s * 0.8, -s * 0.3 - wingUp * 0.7);
+        p.endShape();
+        // Wing tip feather
+        p.strokeWeight(1.0);
+        p.line(-s * 0.8, -s * 0.3 - wingUp * 0.7, -s * 1.1, -s * 0.15 - wingUp * 0.4);
+
+        // Right wing
+        p.strokeWeight(1.8);
+        p.beginShape();
+        p.vertex(s * 0.2, s * 0.08);
+        p.quadraticVertex(s * 0.1, s * 0.6 + wingUp, -s * 0.8, s * 0.3 + wingUp * 0.7);
+        p.endShape();
+        // Wing tip feather
+        p.strokeWeight(1.0);
+        p.line(-s * 0.8, s * 0.3 + wingUp * 0.7, -s * 1.1, s * 0.15 + wingUp * 0.4);
+
+        p.pop();
       };
 
       p.draw = () => {
         p.clear();
 
         for (const bird of birds) {
+          // Organic movement - occasional direction changes
+          bird.turnTimer--;
+          if (bird.turnTimer <= 0) {
+            bird.targetVy = p.random(-0.5, 0.5);
+            bird.turnTimer = p.random(80, 250);
+            // Occasionally toggle gliding
+            if (p.random() > 0.6) {
+              bird.gliding = !bird.gliding;
+              bird.glideTimer = p.random(40, 100);
+            }
+          }
+
+          bird.glideTimer--;
+          if (bird.glideTimer <= 0) {
+            bird.gliding = false;
+          }
+
+          // Smooth steering
+          bird.vy += (bird.targetVy - bird.vy) * 0.02;
+
+          // Gentle bobbing
+          const bob = p.sin(p.frameCount * 0.015 + bird.wingPhase) * 0.08;
+
           bird.x += bird.vx;
-          bird.y += bird.vy + p.sin(p.frameCount * 0.02 + bird.wingPhase) * 0.15;
+          bird.y += bird.vy + bob;
 
-          // Wrap around
-          if (bird.x > p.width + 20) bird.x = -20;
-          if (bird.x < -20) bird.x = p.width + 20;
-          if (bird.y > p.height * 0.7) bird.vy = -Math.abs(bird.vy);
-          if (bird.y < 20) bird.vy = Math.abs(bird.vy);
+          // Wrap & bounds
+          if (bird.x > p.width + 30) bird.x = -30;
+          if (bird.x < -30) bird.x = p.width + 30;
+          if (bird.y > p.height * 0.65) bird.targetVy = -Math.abs(bird.targetVy) - 0.2;
+          if (bird.y < 30) bird.targetVy = Math.abs(bird.targetVy) + 0.2;
 
-          // Update trail
+          // Trail
           bird.trail.push({ x: bird.x, y: bird.y });
           if (bird.trail.length > TRAIL_LENGTH) bird.trail.shift();
 
-          // Draw trail
-          p.noFill();
+          // Draw trail - fading dotted line
           for (let i = 1; i < bird.trail.length; i++) {
-            const alpha = (i / bird.trail.length) * 60;
-            const weight = (i / bird.trail.length) * 1.5;
-            p.stroke(0, 0, 0, alpha);
-            p.strokeWeight(weight);
+            const t = i / bird.trail.length;
+            const alpha = t * 35;
+            p.stroke(50, 50, 55, alpha);
+            p.strokeWeight(t * 1.2);
             p.line(bird.trail[i - 1].x, bird.trail[i - 1].y, bird.trail[i].x, bird.trail[i].y);
           }
 
-          // Calculate flight angle
-          const angle = p.atan2(bird.vy, bird.vx);
+          // Flight angle
+          const angle = p.atan2(bird.vy + bob, bird.vx);
 
-          const wing = p.sin(p.frameCount * bird.wingSpeed + bird.wingPhase);
-          const wingSpan = bird.size * 2.5;
-          const wingLift = wing * bird.size * 1.2;
+          // Wing flap - slower when gliding
+          const flapSpeed = bird.gliding ? bird.wingSpeed * 0.15 : bird.wingSpeed;
+          const wingRaw = p.sin(p.frameCount * flapSpeed + bird.wingPhase);
+          const wing = bird.gliding ? 0.3 + wingRaw * 0.1 : wingRaw;
 
-          p.push();
-          p.translate(bird.x, bird.y);
-          p.rotate(angle);
-          p.noFill();
-          p.stroke(0, 0, 0, 120);
-          p.strokeWeight(2);
-
-          // Body line pointing forward
-          p.line(-bird.size * 0.5, 0, bird.size * 0.8, 0);
-
-          // Wings perpendicular to flight direction
-          // Left wing (up)
-          p.line(0, 0, 0, -wingSpan * 0.5 - wingLift * 0.5);
-          p.line(0, -wingSpan * 0.5 - wingLift * 0.5, -bird.size * 0.3, -wingSpan * 0.3 - wingLift * 0.2);
-
-          // Right wing (down)
-          p.line(0, 0, 0, wingSpan * 0.5 + wingLift * 0.5);
-          p.line(0, wingSpan * 0.5 + wingLift * 0.5, -bird.size * 0.3, wingSpan * 0.3 + wingLift * 0.2);
-
-          p.pop();
+          drawBird(bird, angle, wing);
         }
       };
 
