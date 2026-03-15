@@ -190,6 +190,10 @@ const BirdSketch = () => {
         }
       };
 
+      p.mousePressed = () => {
+        attractPoint = { x: p.mouseX, y: p.mouseY, timer: 180 };
+      };
+
       p.windowResized = () => {
         if (containerRef.current) {
           p.resizeCanvas(
