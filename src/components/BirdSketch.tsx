@@ -35,7 +35,7 @@ const BirdSketch = () => {
             y: p.random(p.height * 0.6),
             vx: p.random(0.4, 1.2) * (p.random() > 0.5 ? 1 : -1),
             vy: p.random(-0.2, 0.2),
-            size: p.random(3, 6),
+            size: p.random(6, 14),
             wingPhase: p.random(p.TWO_PI),
             wingSpeed: p.random(0.06, 0.12),
           });
