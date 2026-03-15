@@ -62,8 +62,8 @@ const BirdSketch = () => {
           p.push();
           p.translate(bird.x, bird.y);
           p.noFill();
-          p.stroke(0, 0, 0, 40);
-          p.strokeWeight(1.2);
+          p.stroke(0, 0, 0, 120);
+          p.strokeWeight(2);
 
           // Left wing
           p.line(0, 0, -wingSpan * 0.5, -wingLift);
