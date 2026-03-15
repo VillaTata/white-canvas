@@ -20,7 +20,7 @@ const BirdSketch = () => {
 
     const sketch = (p: p5) => {
       const birds: Bird[] = [];
-      const NUM_BIRDS = 12;
+      const NUM_BIRDS = 18;
 
       p.setup = () => {
         const canvas = p.createCanvas(
@@ -35,7 +35,7 @@ const BirdSketch = () => {
             y: p.random(p.height * 0.6),
             vx: p.random(0.4, 1.2) * (p.random() > 0.5 ? 1 : -1),
             vy: p.random(-0.2, 0.2),
-            size: p.random(3, 6),
+            size: p.random(6, 14),
             wingPhase: p.random(p.TWO_PI),
             wingSpeed: p.random(0.06, 0.12),
           });
@@ -62,8 +62,8 @@ const BirdSketch = () => {
           p.push();
           p.translate(bird.x, bird.y);
           p.noFill();
-          p.stroke(0, 0, 0, 40);
-          p.strokeWeight(1.2);
+          p.stroke(0, 0, 0, 120);
+          p.strokeWeight(2);
 
           // Left wing
           p.line(0, 0, -wingSpan * 0.5, -wingLift);
