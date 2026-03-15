@@ -220,7 +220,7 @@ const BirdSketch = () => {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 pointer-events-none"
+      className="absolute inset-0"
       style={{ zIndex: 0 }}
     />
   );
