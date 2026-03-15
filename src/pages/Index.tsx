@@ -9,7 +9,7 @@ const Index = () => {
           Villa Tata
         </h1>
         <p className="text-lg text-muted-foreground leading-relaxed">
-          Organize, manage, and showcase your photo collections with effortless clarity. A minimal workspace for photographers who value simplicity.
+          Finca ecoturística
         </p>
       </div>
     </div>
