@@ -68,13 +68,13 @@ const BirdSketch = () => {
           // Left wing
           p.beginShape();
           p.vertex(0, 0);
-          p.quadraticVertex(-wingSpan * 0.5, -wingLift, -wingSpan, -wingLift * 0.3);
+          p.bezierVertex(-wingSpan * 0.3, -wingLift, -wingSpan * 0.7, -wingLift, -wingSpan, -wingLift * 0.3);
           p.endShape();
 
           // Right wing
           p.beginShape();
           p.vertex(0, 0);
-          p.quadraticVertex(wingSpan * 0.5, -wingLift, wingSpan, -wingLift * 0.3);
+          p.bezierVertex(wingSpan * 0.3, -wingLift, wingSpan * 0.7, -wingLift, wingSpan, -wingLift * 0.3);
           p.endShape();
 
           p.pop();
