@@ -136,6 +136,23 @@ const BirdSketch = () => {
           // Smooth steering
           bird.vy += (bird.targetVy - bird.vy) * 0.02;
 
+          // Attract toward click point
+          if (attractPoint) {
+            const dx = attractPoint.x - bird.x;
+            const dy = attractPoint.y - bird.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const force = 0.03;
+            bird.vx += (dx / (dist + 1)) * force;
+            bird.vy += (dy / (dist + 1)) * force;
+            // Clamp speed
+            const speed = Math.sqrt(bird.vx * bird.vx + bird.vy * bird.vy);
+            const maxSpeed = 3.5;
+            if (speed > maxSpeed) {
+              bird.vx = (bird.vx / speed) * maxSpeed;
+              bird.vy = (bird.vy / speed) * maxSpeed;
+            }
+          }
+
           // Gentle bobbing
           const bob = p.sin(p.frameCount * 0.015 + bird.wingPhase) * 0.08;
 
