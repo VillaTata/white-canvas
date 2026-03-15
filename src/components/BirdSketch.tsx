@@ -27,6 +27,7 @@ const BirdSketch = () => {
       const birds: Bird[] = [];
       const NUM_BIRDS = 18;
       const TRAIL_LENGTH = 25;
+      let attractPoint: { x: number; y: number; timer: number } | null = null;
 
       p.setup = () => {
         const canvas = p.createCanvas(
