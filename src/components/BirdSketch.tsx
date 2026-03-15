@@ -87,8 +87,11 @@ const BirdSketch = () => {
 
         // Left wing
         p.beginShape();
-        p.vertex(s * 0.2, -s * 0.08);
-        p.quadraticVertex(s * 0.1, -s * 0.6 - wingUp, -s * 0.8, -s * 0.3 - wingUp * 0.7);
+        p.curveVertex(s * 0.4, 0);
+        p.curveVertex(s * 0.2, -s * 0.08);
+        p.curveVertex(s * 0.1, -s * 0.6 - wingUp);
+        p.curveVertex(-s * 0.8, -s * 0.3 - wingUp * 0.7);
+        p.curveVertex(-s * 1.0, -s * 0.1 - wingUp * 0.3);
         p.endShape();
         // Wing tip feather
         p.strokeWeight(1.0);
