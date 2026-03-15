@@ -20,7 +20,7 @@ const BirdSketch = () => {
 
     const sketch = (p: p5) => {
       const birds: Bird[] = [];
-      const NUM_BIRDS = 12;
+      const NUM_BIRDS = 18;
 
       p.setup = () => {
         const canvas = p.createCanvas(
