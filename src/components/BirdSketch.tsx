@@ -85,30 +85,28 @@ const BirdSketch = () => {
         p.strokeWeight(1.8);
         p.stroke(30, 30, 35, 150);
 
-        // Left wing
-        p.beginShape();
-        p.curveVertex(s * 0.4, 0);
-        p.curveVertex(s * 0.2, -s * 0.08);
-        p.curveVertex(s * 0.1, -s * 0.6 - wingUp);
-        p.curveVertex(-s * 0.8, -s * 0.3 - wingUp * 0.7);
-        p.curveVertex(-s * 1.0, -s * 0.1 - wingUp * 0.3);
-        p.endShape();
+        // Left wing - bezier curve
+        p.bezier(
+          s * 0.2, -s * 0.08,
+          s * 0.1, -s * 0.5 - wingUp,
+          -s * 0.4, -s * 0.5 - wingUp * 0.8,
+          -s * 0.9, -s * 0.2 - wingUp * 0.4
+        );
         // Wing tip feather
         p.strokeWeight(1.0);
-        p.line(-s * 0.8, -s * 0.3 - wingUp * 0.7, -s * 1.1, -s * 0.15 - wingUp * 0.4);
+        p.line(-s * 0.9, -s * 0.2 - wingUp * 0.4, -s * 1.1, -s * 0.1 - wingUp * 0.2);
 
-        // Right wing
+        // Right wing - bezier curve
         p.strokeWeight(1.8);
-        p.beginShape();
-        p.curveVertex(s * 0.4, 0);
-        p.curveVertex(s * 0.2, s * 0.08);
-        p.curveVertex(s * 0.1, s * 0.6 + wingUp);
-        p.curveVertex(-s * 0.8, s * 0.3 + wingUp * 0.7);
-        p.curveVertex(-s * 1.0, s * 0.1 + wingUp * 0.3);
-        p.endShape();
+        p.bezier(
+          s * 0.2, s * 0.08,
+          s * 0.1, s * 0.5 + wingUp,
+          -s * 0.4, s * 0.5 + wingUp * 0.8,
+          -s * 0.9, s * 0.2 + wingUp * 0.4
+        );
         // Wing tip feather
         p.strokeWeight(1.0);
-        p.line(-s * 0.8, s * 0.3 + wingUp * 0.7, -s * 1.1, s * 0.15 + wingUp * 0.4);
+        p.line(-s * 0.9, s * 0.2 + wingUp * 0.4, -s * 1.1, s * 0.1 + wingUp * 0.2);
 
         p.pop();
       };
