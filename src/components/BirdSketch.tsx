@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import p5 from "p5";
 
-interface Bird {
+interface Butterfly {
   x: number;
   y: number;
   vx: number;
@@ -12,8 +12,9 @@ interface Bird {
   trail: { x: number; y: number }[];
   targetVy: number;
   turnTimer: number;
-  gliding: boolean;
-  glideTimer: number;
+  color1: { r: number; g: number; b: number };
+  color2: { r: number; g: number; b: number };
+  wobble: number;
 }
 
 const BirdSketch = () => {
@@ -24,10 +25,20 @@ const BirdSketch = () => {
     if (!containerRef.current) return;
 
     const sketch = (p: p5) => {
-      const birds: Bird[] = [];
-      const NUM_BIRDS = 18;
-      const TRAIL_LENGTH = 25;
+      const butterflies: Butterfly[] = [];
+      const NUM = 18;
+      const TRAIL_LENGTH = 20;
       let attractPoint: { x: number; y: number; timer: number } | null = null;
+
+      const palettes = [
+        { r: 220, g: 120, b: 50 },   // orange monarch
+        { r: 240, g: 200, b: 60 },   // yellow
+        { r: 180, g: 80, b: 160 },   // purple
+        { r: 60, g: 160, b: 200 },   // blue morpho
+        { r: 200, g: 60, b: 80 },    // red
+        { r: 100, g: 180, b: 80 },   // green
+        { r: 240, g: 140, b: 180 },  // pink
+      ];
 
       p.setup = () => {
         const canvas = p.createCanvas(
@@ -36,78 +47,107 @@ const BirdSketch = () => {
         );
         canvas.style("display", "block");
 
-        for (let i = 0; i < NUM_BIRDS; i++) {
+        for (let i = 0; i < NUM; i++) {
           const x = p.random(p.width);
-          const y = p.random(p.height * 0.5);
-          birds.push({
+          const y = p.random(p.height * 0.6);
+          const c1 = palettes[Math.floor(p.random(palettes.length))];
+          const c2 = palettes[Math.floor(p.random(palettes.length))];
+          butterflies.push({
             x, y,
-            vx: p.random(1.0, 2.2) * (p.random() > 0.5 ? 1 : -1),
+            vx: p.random(0.5, 1.4) * (p.random() > 0.5 ? 1 : -1),
             vy: p.random(-0.3, 0.3),
-            size: p.random(5, 11),
+            size: p.random(8, 16),
             wingPhase: p.random(p.TWO_PI),
-            wingSpeed: p.random(0.08, 0.15),
+            wingSpeed: p.random(0.1, 0.2),
             trail: Array.from({ length: TRAIL_LENGTH }, () => ({ x, y })),
             targetVy: 0,
-            turnTimer: p.random(60, 200),
-            gliding: false,
-            glideTimer: p.random(30, 120),
+            turnTimer: p.random(40, 150),
+            color1: c1,
+            color2: c2,
+            wobble: p.random(0.02, 0.05),
           });
         }
       };
 
-      const drawBird = (bird: Bird, angle: number, wing: number) => {
-        const s = bird.size;
+      const drawButterfly = (b: Butterfly, wing: number) => {
+        const s = b.size;
+        const angle = p.atan2(b.vy, b.vx);
+        const wingOpen = Math.abs(wing); // 0 to 1, wing openness
 
         p.push();
-        p.translate(bird.x, bird.y);
+        p.translate(b.x, b.y);
         p.rotate(angle);
 
-        // Wing curve amount
-        const wingUp = wing * s * 0.9;
-
-        // Body - subtle tapered shape
+        // Body
         p.noStroke();
-        p.fill(30, 30, 35, 160);
+        p.fill(40, 35, 30, 200);
+        p.ellipse(0, 0, s * 0.9, s * 0.18);
+
+        // Antennae
+        p.stroke(40, 35, 30, 150);
+        p.strokeWeight(0.8);
+        p.line(s * 0.4, 0, s * 0.8, -s * 0.35);
+        p.line(s * 0.4, 0, s * 0.8, s * 0.35);
+        // Antenna tips
+        p.fill(40, 35, 30, 120);
+        p.noStroke();
+        p.ellipse(s * 0.8, -s * 0.35, s * 0.1, s * 0.1);
+        p.ellipse(s * 0.8, s * 0.35, s * 0.1, s * 0.1);
+
+        // Upper wings (larger)
+        const upperWingH = s * 1.1 * wingOpen;
+        p.fill(b.color1.r, b.color1.g, b.color1.b, 180);
+        p.stroke(b.color1.r * 0.6, b.color1.g * 0.6, b.color1.b * 0.6, 100);
+        p.strokeWeight(0.8);
+
+        // Top upper wing
         p.beginShape();
-        p.vertex(s * 1.2, 0);       // beak tip
-        p.vertex(s * 0.3, -s * 0.12);
-        p.vertex(-s * 0.6, 0);      // tail
-        p.vertex(s * 0.3, s * 0.12);
+        p.vertex(s * 0.2, -s * 0.06);
+        p.vertex(s * 0.5, -upperWingH * 0.8);
+        p.vertex(s * 0.1, -upperWingH);
+        p.vertex(-s * 0.3, -upperWingH * 0.6);
+        p.vertex(-s * 0.2, -s * 0.06);
         p.endShape(p.CLOSE);
 
-        // Tail fork
-        p.stroke(30, 30, 35, 130);
-        p.strokeWeight(1.2);
-        p.line(-s * 0.6, 0, -s * 1.1, -s * 0.2);
-        p.line(-s * 0.6, 0, -s * 1.1, s * 0.2);
+        // Bottom upper wing
+        p.beginShape();
+        p.vertex(s * 0.2, s * 0.06);
+        p.vertex(s * 0.5, upperWingH * 0.8);
+        p.vertex(s * 0.1, upperWingH);
+        p.vertex(-s * 0.3, upperWingH * 0.6);
+        p.vertex(-s * 0.2, s * 0.06);
+        p.endShape(p.CLOSE);
 
-        // Wings - smooth curved arcs
-        p.noFill();
-        p.strokeWeight(1.8);
-        p.stroke(30, 30, 35, 150);
+        // Lower wings (smaller, rounder)
+        const lowerWingH = s * 0.75 * wingOpen;
+        p.fill(b.color2.r, b.color2.g, b.color2.b, 160);
+        p.stroke(b.color2.r * 0.6, b.color2.g * 0.6, b.color2.b * 0.6, 80);
 
-        // Left wing - bezier curve
-        p.bezier(
-          s * 0.2, -s * 0.08,
-          s * 0.1, -s * 0.5 - wingUp,
-          -s * 0.4, -s * 0.5 - wingUp * 0.8,
-          -s * 0.9, -s * 0.2 - wingUp * 0.4
-        );
-        // Wing tip feather
-        p.strokeWeight(1.0);
-        p.line(-s * 0.9, -s * 0.2 - wingUp * 0.4, -s * 1.1, -s * 0.1 - wingUp * 0.2);
+        // Top lower wing
+        p.beginShape();
+        p.vertex(-s * 0.1, -s * 0.05);
+        p.vertex(-s * 0.15, -lowerWingH * 0.9);
+        p.vertex(-s * 0.5, -lowerWingH);
+        p.vertex(-s * 0.5, -s * 0.05);
+        p.endShape(p.CLOSE);
 
-        // Right wing - bezier curve
-        p.strokeWeight(1.8);
-        p.bezier(
-          s * 0.2, s * 0.08,
-          s * 0.1, s * 0.5 + wingUp,
-          -s * 0.4, s * 0.5 + wingUp * 0.8,
-          -s * 0.9, s * 0.2 + wingUp * 0.4
-        );
-        // Wing tip feather
-        p.strokeWeight(1.0);
-        p.line(-s * 0.9, s * 0.2 + wingUp * 0.4, -s * 1.1, s * 0.1 + wingUp * 0.2);
+        // Bottom lower wing
+        p.beginShape();
+        p.vertex(-s * 0.1, s * 0.05);
+        p.vertex(-s * 0.15, lowerWingH * 0.9);
+        p.vertex(-s * 0.5, lowerWingH);
+        p.vertex(-s * 0.5, s * 0.05);
+        p.endShape(p.CLOSE);
+
+        // Wing spots/patterns
+        p.noStroke();
+        p.fill(255, 255, 255, 60 * wingOpen);
+        p.ellipse(s * 0.15, -upperWingH * 0.5, s * 0.25, s * 0.2);
+        p.ellipse(s * 0.15, upperWingH * 0.5, s * 0.25, s * 0.2);
+
+        p.fill(0, 0, 0, 40 * wingOpen);
+        p.ellipse(-s * 0.25, -lowerWingH * 0.5, s * 0.15, s * 0.12);
+        p.ellipse(-s * 0.25, lowerWingH * 0.5, s * 0.15, s * 0.12);
 
         p.pop();
       };
@@ -115,84 +155,73 @@ const BirdSketch = () => {
       p.draw = () => {
         p.clear();
 
-        // Decay attract point
         if (attractPoint) {
           attractPoint.timer--;
           if (attractPoint.timer <= 0) attractPoint = null;
         }
 
-        for (const bird of birds) {
-          // Organic movement - occasional direction changes
-          bird.turnTimer--;
-          if (bird.turnTimer <= 0) {
-            bird.targetVy = p.random(-0.5, 0.5);
-            bird.turnTimer = p.random(80, 250);
-            // Occasionally toggle gliding
-            if (p.random() > 0.6) {
-              bird.gliding = !bird.gliding;
-              bird.glideTimer = p.random(40, 100);
-            }
+        for (const b of butterflies) {
+          // Erratic direction changes (butterfly-like)
+          b.turnTimer--;
+          if (b.turnTimer <= 0) {
+            b.targetVy = p.random(-0.8, 0.8);
+            b.vx += p.random(-0.3, 0.3);
+            b.turnTimer = p.random(30, 120);
           }
 
-          bird.glideTimer--;
-          if (bird.glideTimer <= 0) {
-            bird.gliding = false;
-          }
+          b.vy += (b.targetVy - b.vy) * 0.04;
 
-          // Smooth steering
-          bird.vy += (bird.targetVy - bird.vy) * 0.02;
-
-          // Attract toward click point
+          // Attract toward click
           if (attractPoint) {
-            const dx = attractPoint.x - bird.x;
-            const dy = attractPoint.y - bird.y;
+            const dx = attractPoint.x - b.x;
+            const dy = attractPoint.y - b.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
             const force = 0.03;
-            bird.vx += (dx / (dist + 1)) * force;
-            bird.vy += (dy / (dist + 1)) * force;
-            // Clamp speed
-            const speed = Math.sqrt(bird.vx * bird.vx + bird.vy * bird.vy);
-            const maxSpeed = 3.5;
-            if (speed > maxSpeed) {
-              bird.vx = (bird.vx / speed) * maxSpeed;
-              bird.vy = (bird.vy / speed) * maxSpeed;
+            b.vx += (dx / (dist + 1)) * force;
+            b.vy += (dy / (dist + 1)) * force;
+            const speed = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
+            if (speed > 3) {
+              b.vx = (b.vx / speed) * 3;
+              b.vy = (b.vy / speed) * 3;
             }
           }
 
-          // Gentle bobbing
-          const bob = p.sin(p.frameCount * 0.015 + bird.wingPhase) * 0.08;
+          // Flutter wobble
+          const wobX = p.sin(p.frameCount * b.wobble + b.wingPhase) * 0.4;
+          const wobY = p.cos(p.frameCount * b.wobble * 1.3 + b.wingPhase) * 0.3;
 
-          bird.x += bird.vx;
-          bird.y += bird.vy + bob;
+          b.x += b.vx + wobX;
+          b.y += b.vy + wobY;
 
           // Wrap & bounds
-          if (bird.x > p.width + 30) bird.x = -30;
-          if (bird.x < -30) bird.x = p.width + 30;
-          if (bird.y > p.height * 0.65) bird.targetVy = -Math.abs(bird.targetVy) - 0.2;
-          if (bird.y < 30) bird.targetVy = Math.abs(bird.targetVy) + 0.2;
+          if (b.x > p.width + 30) b.x = -30;
+          if (b.x < -30) b.x = p.width + 30;
+          if (b.y > p.height * 0.7) b.targetVy = -Math.abs(b.targetVy) - 0.3;
+          if (b.y < 20) b.targetVy = Math.abs(b.targetVy) + 0.3;
 
-          // Trail
-          bird.trail.push({ x: bird.x, y: bird.y });
-          if (bird.trail.length > TRAIL_LENGTH) bird.trail.shift();
-
-          // Draw trail - fading dotted line
-          for (let i = 1; i < bird.trail.length; i++) {
-            const t = i / bird.trail.length;
-            const alpha = t * 35;
-            p.stroke(50, 50, 55, alpha);
-            p.strokeWeight(t * 1.2);
-            p.line(bird.trail[i - 1].x, bird.trail[i - 1].y, bird.trail[i].x, bird.trail[i].y);
+          // Clamp base speed
+          const spd = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
+          if (spd < 0.4) {
+            b.vx = (b.vx / (spd + 0.01)) * 0.5;
           }
 
-          // Flight angle
-          const angle = p.atan2(bird.vy + bob, bird.vx);
+          // Trail
+          b.trail.push({ x: b.x, y: b.y });
+          if (b.trail.length > TRAIL_LENGTH) b.trail.shift();
 
-          // Wing flap - slower when gliding
-          const flapSpeed = bird.gliding ? bird.wingSpeed * 0.15 : bird.wingSpeed;
-          const wingRaw = p.sin(p.frameCount * flapSpeed + bird.wingPhase);
-          const wing = bird.gliding ? 0.3 + wingRaw * 0.1 : wingRaw;
+          // Draw trail with butterfly color
+          for (let i = 1; i < b.trail.length; i++) {
+            const t = i / b.trail.length;
+            const alpha = t * 25;
+            p.stroke(b.color1.r, b.color1.g, b.color1.b, alpha);
+            p.strokeWeight(t * 1.0);
+            p.line(b.trail[i - 1].x, b.trail[i - 1].y, b.trail[i].x, b.trail[i].y);
+          }
 
-          drawBird(bird, angle, wing);
+          // Wing flap
+          const wing = p.sin(p.frameCount * b.wingSpeed + b.wingPhase);
+
+          drawButterfly(b, wing);
         }
       };
 
