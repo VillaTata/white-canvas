@@ -27,6 +27,7 @@ const BirdSketch = () => {
       const birds: Bird[] = [];
       const NUM_BIRDS = 18;
       const TRAIL_LENGTH = 25;
+      let attractPoint: { x: number; y: number; timer: number } | null = null;
 
       p.setup = () => {
         const canvas = p.createCanvas(
@@ -114,6 +115,12 @@ const BirdSketch = () => {
       p.draw = () => {
         p.clear();
 
+        // Decay attract point
+        if (attractPoint) {
+          attractPoint.timer--;
+          if (attractPoint.timer <= 0) attractPoint = null;
+        }
+
         for (const bird of birds) {
           // Organic movement - occasional direction changes
           bird.turnTimer--;
@@ -134,6 +141,23 @@ const BirdSketch = () => {
 
           // Smooth steering
           bird.vy += (bird.targetVy - bird.vy) * 0.02;
+
+          // Attract toward click point
+          if (attractPoint) {
+            const dx = attractPoint.x - bird.x;
+            const dy = attractPoint.y - bird.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const force = 0.03;
+            bird.vx += (dx / (dist + 1)) * force;
+            bird.vy += (dy / (dist + 1)) * force;
+            // Clamp speed
+            const speed = Math.sqrt(bird.vx * bird.vx + bird.vy * bird.vy);
+            const maxSpeed = 3.5;
+            if (speed > maxSpeed) {
+              bird.vx = (bird.vx / speed) * maxSpeed;
+              bird.vy = (bird.vy / speed) * maxSpeed;
+            }
+          }
 
           // Gentle bobbing
           const bob = p.sin(p.frameCount * 0.015 + bird.wingPhase) * 0.08;
@@ -172,6 +196,10 @@ const BirdSketch = () => {
         }
       };
 
+      p.mousePressed = () => {
+        attractPoint = { x: p.mouseX, y: p.mouseY, timer: 180 };
+      };
+
       p.windowResized = () => {
         if (containerRef.current) {
           p.resizeCanvas(
@@ -192,7 +220,7 @@ const BirdSketch = () => {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 pointer-events-none"
+      className="absolute inset-0"
       style={{ zIndex: 0 }}
     />
   );
