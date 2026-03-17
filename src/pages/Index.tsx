@@ -39,6 +39,7 @@ const Index = () => {
       <img
         src={villaLogo}
         alt="Villa Tata"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         className={`fixed z-50 rounded-lg shadow-lg logo-intro ${
           navVisible ? "logo-intro--top" : "logo-intro--center"
         }`}
