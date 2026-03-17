@@ -1,0 +1,36 @@
+/* Landing page specific styles */
+
+.landing-h2 {
+  @apply text-4xl md:text-5xl font-semibold text-center text-white;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.landing-h2-accent {
+  @apply block w-16 h-1 mx-auto mt-4 rounded-full;
+  background: linear-gradient(90deg, hsl(142 60% 45%), hsl(142 50% 65%));
+}
+
+.landing-h3 {
+  @apply text-lg font-semibold uppercase tracking-wider text-white mb-4;
+  border-left: 3px solid hsl(142 60% 45%);
+  padding-left: 0.75rem;
+}
+
+/* Navbar logo intro animation */
+.logo-intro {
+  transition: all 1800ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.logo-intro--center {
+  top: 50%;
+  left: 50%;
+  width: 18rem;
+  transform: translate(-50%, -50%);
+}
+
+.logo-intro--top {
+  top: 0.65rem;
+  left: 0;
+  width: 2.75rem;
+  transform: translate(0, 0);
+}
