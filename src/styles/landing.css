@@ -29,8 +29,9 @@
 }
 
 .logo-intro--top {
-  top: 0.65rem;
-  left: 0;
+  top: 0.45rem;
+  left: 1.5rem;
   width: 2.75rem;
   transform: translate(0, 0);
+  cursor: pointer;
 }
