@@ -1,5 +1,3 @@
-import villaLogo from "@/assets/villa-tata-logo.jpeg";
-
 interface NavbarProps {
   visible: boolean;
 }
@@ -19,17 +17,12 @@ const Navbar = ({ visible }: NavbarProps) => (
     `}
   >
     <nav className="flex items-center justify-between px-6 md:px-12 py-3">
-      {/* Logo + Name */}
+      {/* Name (logo is the floating intro element) */}
       <a
         href="#top"
         onClick={scrollToTop}
-        className="flex items-center gap-3 group"
+        className="flex items-center gap-3 group pl-14"
       >
-        <img
-          src={villaLogo}
-          alt="Villa Tata"
-          className="w-11 rounded-lg shadow-lg transition-transform group-hover:scale-105"
-        />
         <span className="text-white font-semibold text-lg tracking-wide drop-shadow-md">
           Villa Tata
         </span>
