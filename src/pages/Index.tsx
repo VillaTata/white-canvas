@@ -48,7 +48,7 @@ const Index = () => {
       />
 
       <Navbar visible={navVisible} />
-      <HeroSection />
+      <HeroSection textVisible={heroTextVisible} />
       <FincaSection ref={finca.ref} visible={finca.visible} />
       <GaleriaSection {...gallery} />
       <ReservasSection />
