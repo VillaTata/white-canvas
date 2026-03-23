@@ -16,13 +16,15 @@ import villaLogo from "@/assets/villa-tata-logo.jpeg";
 
 const Index = () => {
   const [navVisible, setNavVisible] = useState(false);
+  const [heroTextVisible, setHeroTextVisible] = useState(false);
   const gallery = useGallery();
   const finca = useScrollReveal(0.3);
 
-  /* Logo intro → show navbar */
+  /* Logo intro → show navbar → show hero text */
   useEffect(() => {
-    const timer = setTimeout(() => setNavVisible(true), 700);
-    return () => clearTimeout(timer);
+    const navTimer = setTimeout(() => setNavVisible(true), 700);
+    const textTimer = setTimeout(() => setHeroTextVisible(true), 2200);
+    return () => { clearTimeout(navTimer); clearTimeout(textTimer); };
   }, []);
 
   return (
@@ -46,7 +48,7 @@ const Index = () => {
       />
 
       <Navbar visible={navVisible} />
-      <HeroSection />
+      <HeroSection textVisible={heroTextVisible} />
       <FincaSection ref={finca.ref} visible={finca.visible} />
       <GaleriaSection {...gallery} />
       <ReservasSection />
