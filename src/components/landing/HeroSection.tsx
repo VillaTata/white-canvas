@@ -1,15 +1,20 @@
-import villaLogo from "@/assets/villa-tata-logo.jpeg";
-
 const HeroSection = () => (
   <section
     id="top"
     className="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6"
   >
-    <img
-      src={villaLogo}
-      alt="Villa Tata - Finca Ecoturística"
-      className="w-64 mb-6 rounded-lg shadow-lg"
-    />
+    <h1
+      className="text-5xl md:text-7xl font-bold text-white drop-shadow-lg"
+      style={{ textShadow: "0 4px 20px rgba(0,0,0,0.6)" }}
+    >
+      Finca Villa Tata
+    </h1>
+    <h2
+      className="mt-4 max-w-2xl text-lg md:text-2xl text-white/90 font-light"
+      style={{ textShadow: "0 2px 10px rgba(0,0,0,0.5)" }}
+    >
+      Un espacio para disfrutar en familia del campo, los animales y la naturaleza.
+    </h2>
   </section>
 );
 
