@@ -37,14 +37,14 @@ const ReservasSection = () => (
         Puedes reservar tu estadía en Villa Tata desde cualquiera de nuestras plataformas.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="flex flex-col md:flex-row justify-center items-center gap-6">
         {links.map((link) => (
           <a
             key={link.title}
             href={link.href}
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex flex-col items-center rounded-xl py-6 shadow-lg transition ${link.className}`}
+            className={`flex flex-col items-center rounded-xl py-6 shadow-lg transition w-full md:w-64 ${link.className}`}
           >
             <span className="text-2xl mb-2">{link.icon}</span>
             <span className="font-semibold text-lg">{link.title}</span>
