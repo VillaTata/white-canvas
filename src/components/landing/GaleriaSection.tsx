@@ -65,7 +65,7 @@ const GaleriaSection = ({
       {/* Grid */}
       <div
         className={`
-          grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6
+          flex flex-wrap justify-center items-center gap-6 max-w-6xl mx-auto w-full
           transition-all duration-500
           ${animateGallery ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}
         `}
@@ -73,7 +73,7 @@ const GaleriaSection = ({
         {currentGallery.map((img, index) => (
           <div
             key={index}
-            className="relative h-64 overflow-hidden rounded-xl cursor-pointer group shadow-lg"
+            className="relative w-full sm:w-72 md:w-80 h-64 flex-shrink-0 overflow-hidden rounded-xl cursor-pointer group shadow-lg"
             onClick={() => openImage(currentGallery, index)}
           >
             <img
