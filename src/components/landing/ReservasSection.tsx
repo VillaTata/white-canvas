@@ -13,13 +13,13 @@ const links = [
     subtitle: "Ver disponibilidad",
     className: "bg-[#FF385C] hover:opacity-90",
   },
-  {
-    href: "https://www.booking.com/hotel/co/alquiler-de-cabana-completa-granja-autosostenible.es.html?aid=304142&label=gen173rf-10CAEoggI46AdIClgDaDKIAQGYATO4ARfIARXYAQPoAQH4AQGIAgGiAg5sb2NhbGhvc3Q6ODA4MKgCAbgC8f7czQbAAgHSAiQzOGMyZDUyMy1kMjdmLTQxMzQtYjAwYy0yNWQzMTM4Y2VmOWbYAgHgAgE&ucfs=1&arphpl=1",
-    icon: "🛎️",
-    title: "Booking",
-    subtitle: "Reservar en Booking",
-    className: "bg-[#003580] hover:bg-[#00224f]",
-  },
+//  {
+//    href: "https://www.booking.com/hotel/co/alquiler-de-cabana-completa-granja-autosostenible.es.html?aid=304142&label=gen173rf-10CAEoggI46AdIClgDaDKIAQGYATO4ARfIARXYAQPoAQH4AQGIAgGiAg5sb2NhbGhvc3Q6ODA4MKgCAbgC8f7czQbAAgHSAiQzOGMyZDUyMy1kMjdmLTQxMzQtYjAwYy0yNWQzMTM4Y2VmOWbYAgHgAgE&ucfs=1&arphpl=1",
+//    icon: "🛎️",
+//    title: "Booking",
+//    subtitle: "Reservar en Booking",
+//    className: "bg-[#003580] hover:bg-[#00224f]",
+//  },
 ];
 
 const ReservasSection = () => (
