@@ -17,6 +17,7 @@ interface GaleriaSectionProps {
 
 const tabs: { key: GalleryTab; label: string }[] = [
   { key: "zonas", label: "Zonas comunes" },
+  { key: "paisajes", label: "Paisajes y animales" },
   { key: "cabana", label: "Cabaña" },
   { key: "apartaestudio", label: "Apartaestudio" },
 ];

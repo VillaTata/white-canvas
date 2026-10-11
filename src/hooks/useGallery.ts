@@ -1,7 +1,11 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 
 const zonasComunesImages = import.meta.glob(
-  "@/assets/galeria/zonas-comunes/*.{jpg,jpeg,png,JPG,JPEG,PNG}",
+  "@/assets/galeria/zonas comunes/*.{jpg,jpeg,png,JPG,JPEG,PNG}",
+  { eager: true, import: "default" }
+);
+const paisajesAnimalesImages = import.meta.glob(
+  "@/assets/galeria/paisajes y animales/*.{jpg,jpeg,png,JPG,JPEG,PNG}",
   { eager: true, import: "default" }
 );
 const cabanaImages = import.meta.glob(
@@ -15,11 +19,12 @@ const apartaestudioImages = import.meta.glob(
 
 const galleries = {
   zonas: Object.values(zonasComunesImages).sort() as string[],
+  paisajes: Object.values(paisajesAnimalesImages).sort() as string[],
   cabana: Object.values(cabanaImages).sort() as string[],
   apartaestudio: Object.values(apartaestudioImages).sort() as string[],
 };
 
-export type GalleryTab = "zonas" | "cabana" | "apartaestudio";
+export type GalleryTab = "zonas" | "paisajes" | "cabana" | "apartaestudio";
 
 export function useGallery() {
   const [activeTab, setActiveTab] = useState<GalleryTab>("zonas");
