@@ -18,7 +18,7 @@ const Index = () => {
   const [navVisible, setNavVisible] = useState(false);
   const [heroTextVisible, setHeroTextVisible] = useState(false);
   const gallery = useGallery();
-  const finca = useScrollReveal(0.3);
+  const finca = useScrollReveal(0.01);
 
   /* Logo intro → show navbar → show hero text */
   useEffect(() => {

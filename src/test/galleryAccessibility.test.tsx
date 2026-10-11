@@ -67,6 +67,53 @@ describe("gallery accessibility", () => {
     ]);
   });
 
+  it("includes the newly added landscape and common-area photos", async () => {
+    render(<GalleryHarness />);
+
+    for (const [category, expectedFilenames] of [
+      [
+        "Paisajes y animales",
+        [
+          "1000076578-640.webp",
+          "1000076594-640.webp",
+          "1000076595-640.webp",
+          "1000076615-640.webp",
+        ],
+      ],
+      [
+        "Zonas comunes",
+        [
+          "1000001521-640.webp",
+          "1000002153-640.webp",
+          "1000076590-640.webp",
+          "1000076591-640.webp",
+          "1000076593-640.webp",
+          "1000076614-640.webp",
+        ],
+      ],
+    ] as const) {
+      fireEvent.click(screen.getByRole("button", { name: category }));
+
+      await waitFor(() =>
+        expect(
+          screen.getByRole("button", { name: category })
+        ).toHaveAttribute("aria-pressed", "true")
+      );
+
+      const filenames = screen.getAllByRole("img").map((image) => {
+        const src = image.getAttribute("src");
+        if (!src) throw new Error("Gallery thumbnail is missing its source");
+
+        const pathname = new URL(src, window.location.href).pathname;
+        return decodeURIComponent(pathname.slice(pathname.lastIndexOf("/") + 1));
+      });
+
+      for (const filename of expectedFilenames) {
+        expect(filenames).toContain(filename);
+      }
+    }
+  });
+
   it("opens an accessible lightbox and returns focus to its trigger on Escape", async () => {
     render(<GalleryHarness />);
 

@@ -83,7 +83,7 @@ const ReviewsSection = () => {
   }, []);
 
   return (
-    <section id="resenas" className="relative z-10 flex min-h-[70vh] scroll-mt-20 flex-col justify-center bg-black/75 px-6 py-20 text-white md:px-20">
+    <section id="resenas" className="relative z-10 flex min-h-[70vh] flex-col justify-center bg-black/75 px-6 py-20 text-white md:px-20">
       <div className="mx-auto w-full">
         <h2 className="landing-h2 mb-4">
           Opiniones de nuestros huéspedes

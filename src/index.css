@@ -145,13 +145,18 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 3.25rem;
+  }
+
+  @media (max-width: 397px) {
+    html {
+      scroll-padding-top: 5rem;
+    }
+  }
+
   body {
     @apply bg-background text-foreground;
-
-    /* Scroll suave para navegación con anchors */
-    scroll-behavior: smooth;
-
-    /* evita que navbar fija tape las secciones */
-    scroll-padding-top: 80px;
   }
 }

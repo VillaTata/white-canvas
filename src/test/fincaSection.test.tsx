@@ -6,16 +6,25 @@ describe("finca section", () => {
   it("shows the sustainability introduction and all amenities before the feature cards", () => {
     render(<FincaSection visible />);
 
-    expect(
-      screen.getByText(/turismo responsable y sostenible/i)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/gastronomía orgánica.*cultivados directamente en la finca/i)
-    ).toBeInTheDocument();
+    const firstParagraph = screen.getByText(/turismo responsable y sostenible/i);
+    const secondParagraph = screen.getByText(
+      /gastronomía orgánica.*cultivados directamente en la finca/i
+    );
+    expect(firstParagraph).toHaveClass("text-xl", "md:text-2xl");
+    expect(secondParagraph).toHaveClass("text-xl", "md:text-2xl");
 
     const amenities = screen.getByRole("list");
-    expect(within(amenities).getAllByRole("listitem")).toHaveLength(12);
+    const items = within(amenities).getAllByRole("listitem");
+    expect(items).toHaveLength(15);
+    expect(items.slice(0, 3).map((item) => item.textContent)).toEqual([
+      "Cabaña: hasta 10 personas",
+      "Apartamento: hasta 3 personas",
+      "Pet friendly",
+    ]);
     for (const label of [
+      "Cabaña: hasta 10 personas",
+      "Apartamento: hasta 3 personas",
+      "Pet friendly",
       "Piscina",
       "Zona de juegos",
       "Cancha de volleyball",
@@ -44,6 +53,17 @@ describe("finca section", () => {
       introduction.compareDocumentPosition(firstCard) &
         Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();
+  });
+
+  it("keeps responsive vertical spacing without adding extra anchor offset", () => {
+    render(<FincaSection visible />);
+
+    const section = screen.getByRole("heading", { name: "La Finca" })
+      .parentElement?.parentElement;
+
+    expect(section).toHaveClass("py-12", "md:py-20");
+    expect(section).not.toHaveClass("scroll-mt-[-24px]");
+    expect(section).not.toHaveClass("translate-y-16", "translate-y-0");
   });
 
   it("animates only decorative amenity icons on hover", () => {

@@ -7,7 +7,7 @@ const links = [
     className: "bg-green-600 hover:bg-green-700",
   },
   {
-    href: "https://www.airbnb.com.co/rooms/1335775644190168406?search_mode=regular_search&adults=1&check_in=2026-03-15&check_out=2026-03-20&children=0&infants=0&pets=0&source_impression_id=p3_1773617165_P3zUTmvh246Ns2d0&previous_page_section_name=1000&federated_search_id=2493949c-7c6b-47f6-9f8a-7eab7ca1ffa3",
+    href: "https://www.airbnb.com.co/rooms/1335775644190168406",
     icon: "🏡",
     title: "Airbnb",
     subtitle: "Ver disponibilidad",

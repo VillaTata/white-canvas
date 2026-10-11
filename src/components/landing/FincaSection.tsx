@@ -1,10 +1,13 @@
 import { forwardRef } from "react";
 import {
   Bird,
+  Building2,
   CookingPot,
   Droplets,
   Flame,
   Gamepad2,
+  House,
+  PawPrint,
   ParkingSquare,
   Target,
   Volleyball,
@@ -33,6 +36,9 @@ const cards = [
 ];
 
 const amenities = [
+  { label: "Cabaña: hasta 10 personas", icon: House },
+  { label: "Apartamento: hasta 3 personas", icon: Building2 },
+  { label: "Pet friendly", icon: PawPrint },
   { label: "Piscina", icon: Waves },
   { label: "Zona de juegos", icon: Gamepad2 },
   { label: "Cancha de volleyball", icon: Volleyball },
@@ -53,10 +59,10 @@ const FincaSection = forwardRef<HTMLElement, FincaSectionProps>(
       id="finca"
       ref={ref}
       className={`
-        relative z-10 min-h-screen flex items-center
-        px-6 md:px-20 bg-cover bg-center
-        transition-all duration-1000
-        ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"}
+        relative z-10 flex min-h-screen flex-col justify-start
+        px-6 py-12 md:px-20 md:py-20 bg-cover bg-center
+        transition-opacity duration-1000
+        ${visible ? "opacity-100" : "opacity-0"}
       `}
       style={{ backgroundImage: `url(${fincaBg})` }}
     >
@@ -69,12 +75,12 @@ const FincaSection = forwardRef<HTMLElement, FincaSectionProps>(
         </h2>
 
         <div className="mx-auto mb-12 max-w-4xl text-center">
-          <p className="mb-4 text-lg leading-relaxed text-white/90">
+          <p className="mb-4 text-xl leading-relaxed text-white/90 md:text-2xl">
             Desconéctate del ruido de la ciudad y reconecta con lo esencial en
             Villa Tata, un refugio de naturaleza y tranquilidad donde
             practicamos turismo responsable y sostenible.
           </p>
-          <p className="mb-8 text-lg leading-relaxed text-white/90">
+          <p className="mb-8 text-xl leading-relaxed text-white/90 md:text-2xl">
             Aquí vivirás una experiencia auténtica, rodeado de paisajes
             naturales y sabores locales. Disfruta de nuestra gastronomía
             orgánica, preparada con productos cultivados directamente en la
