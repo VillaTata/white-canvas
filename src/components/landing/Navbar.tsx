@@ -29,14 +29,17 @@ const Navbar = ({ visible }: NavbarProps) => (
       </a>
 
       {/* Links */}
-      <div className="flex items-center gap-8 text-white">
-        <a href="#finca" className="hover:text-green-300 transition text-sm md:text-base">
+      <div className="flex items-center gap-3 text-white sm:gap-5 md:gap-8">
+        <a href="#finca" className="hover:text-green-300 transition text-xs sm:text-sm md:text-base">
           La finca
         </a>
-        <a href="#galeria" className="hover:text-green-300 transition text-sm md:text-base">
+        <a href="#galeria" className="hover:text-green-300 transition text-xs sm:text-sm md:text-base">
           Galería
         </a>
-        <a href="#reservas" className="hover:text-green-300 transition text-sm md:text-base">
+        <a href="#resenas" className="hover:text-green-300 transition text-xs sm:text-sm md:text-base">
+          Reseñas
+        </a>
+        <a href="#reservas" className="hover:text-green-300 transition text-xs sm:text-sm md:text-base">
           Reservas
         </a>
       </div>
