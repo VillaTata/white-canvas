@@ -73,7 +73,7 @@ const ReviewsSection = () => {
 
   return (
     <section id="resenas" className="relative z-10 flex min-h-[70vh] scroll-mt-20 flex-col justify-center bg-black/75 px-6 py-20 text-white md:px-20">
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="mx-auto w-full">
         <h2 className="landing-h2 mb-4">
           Opiniones de nuestros huéspedes
           <span className="landing-h2-accent" />
@@ -100,13 +100,13 @@ const ReviewsSection = () => {
         {status === "ready" && reviews.length > 0 && (
           <Carousel
             opts={{ align: "start", slidesToScroll: "auto" }}
-            className="mx-auto max-w-5xl px-10"
+            className="mx-auto w-full px-10"
           >
             <CarouselContent>
               {reviews.map((review) => (
                 <CarouselItem
                   key={review.id}
-                  className="basis-full self-start sm:basis-1/2 lg:basis-1/3"
+                  className="basis-[min(100%,22rem)] self-start"
                 >
                   <article className="flex flex-col rounded-xl border border-white/15 bg-white/10 p-6 shadow-lg backdrop-blur-sm">
                     <div

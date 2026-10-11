@@ -15,7 +15,7 @@ if (!listingId || !/^\d+$/.test(listingId)) {
 const url = new URL(
   `https://api.stayapi.com/v1/airbnb/listing/reviews/${encodeURIComponent(listingId)}`,
 );
-url.searchParams.set("limit", "12");
+url.searchParams.set("limit", "21");
 url.searchParams.set("sort_by", "MOST_RECENT");
 
 const response = await fetch(url, {
