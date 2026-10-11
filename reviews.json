@@ -1,4 +1,152 @@
 {
-  "totalCount": 0,
-  "reviews": []
+  "totalCount": 48,
+  "reviews": [
+    {
+      "id": "1784108310691478156",
+      "rating": 5,
+      "text": "Es un gran lugar y los anfitriones son muy amables.  Óptimo para el descanso y la familia. Niños y abuelos encuentran un espacio ideal. Recomendado.",
+      "reviewerName": "Christian",
+      "date": "1 week ago"
+    },
+    {
+      "id": "1779012229770328057",
+      "rating": 5,
+      "text": "Excelente lugar, muy tranquilo y cómodo. Laura siempre respondía rápido  y nos ayudaba con lo que necesitábamos",
+      "reviewerName": "Paola Ruiz",
+      "date": "2 weeks ago"
+    },
+    {
+      "id": "1774011417787596006",
+      "rating": 5,
+      "text": "Excelente la atención de Laura, siempre atenta y con iniciativa. Lugar muy tranquilo. Buenos precios de comida",
+      "reviewerName": "Miguel",
+      "date": "3 weeks ago"
+    },
+    {
+      "id": "1758746004172325807",
+      "rating": 5,
+      "text": "Muy recomendado, el lugar es precioso, Laura es muy amable, hay muchas cosas para hacer, imposible aburrirse. Esteban su hijo es muy tierno, jugaron con mi sobrino todo el tiempo, nos sentimos muy cómodos. Laura fue muy flexible, nos fuimos muy contentos 😊, esperamos volver en una próxima ocasión.",
+      "reviewerName": "Maritza",
+      "date": "August 2026"
+    },
+    {
+      "id": "1755131766899140947",
+      "rating": 4,
+      "text": "Es una muy buena opción para descansar y salir de la rutina. Laura tiene muy buena sazón y buena disposición para con los huespedes. Muchas gracias!",
+      "reviewerName": "Jason",
+      "date": "August 2026"
+    },
+    {
+      "id": "1748671119420631586",
+      "rating": 5,
+      "text": "The place was great... Laura and her family are so nice !! You'll have a terrific time, there's plenty of things to do, places to walk and just chill and relax... We get into the pool, played rana, played tejo, played pool, played ping pong, we made a grill, walked all over, relaxed in the hammocks, we red and it was great...",
+      "reviewerName": "Nicolas",
+      "date": "August 2026"
+    },
+    {
+      "id": "1738480609456128432",
+      "rating": 5,
+      "text": "Recomiendo al 100% la finca Villa Tata, el servicio y la atención de Laura fueron muy buenos, me gustó mucho que podíamos usar los espacios de la finca de forma libre e independiente. Si necesitábamos ayuda con algo, igual Laura estaba pendiente, pero en general era como tener nuestra propia finca. Gracias por esa confianza. Es hermoso la compañía que dan los tres perritos de la finca, muy prudentes y nos hicieron sentir seguros en las noches. Dentro de nuestro grupo familiar había una persona en muletas, a pesar de su movilidad, los espacios de la finca fueron de fácil acceso dentro de las posibilidades. Lugares muy lindos para estar en el pasto, tomar el sol y escuchar y ver las aves.  Al río se puede llegar muy fácil y es hermoso. Nos hubiera gustado que Laura nos contara más sobre el río y en general de la zona. Por otra parte, a pesar de que la piscina es pequeña, considero que es suficiente para relajarse rodeada de los árboles y tomar un baño. MUCHAS GRACIAS POR LA EXPERIENCIA!",
+      "reviewerName": "Ruth",
+      "date": "July 2026"
+    },
+    {
+      "id": "1736970669295454799",
+      "rating": 5,
+      "text": "Un véritable petit coin de paradis ! Nous avons passé un séjour inoubliable dans cet endroit magnifique, parfait pour se ressourcer et profiter de moments précieux.<br/>Laura est une hôte exceptionnelle : toujours attentionnée, disponible et à l'écoute, elle a su anticiper nos besoins avec beaucoup de gentillesse et de bienveillance. Son accueil a largement contribué à rendre notre séjour encore plus agréable.<br/>Les paysages sont splendides, les chants des oiseaux, le beau temps et la sérénité des lieux nous ont offert une parenthèse hors du temps. Nous repartons avec de merveilleux souvenirs et recommandons cet hébergement les yeux fermés. Merci, Laura, pour cette expérience magique !",
+      "reviewerName": "Maria Del Pilar",
+      "date": "July 2026"
+    },
+    {
+      "id": "1734285497599222107",
+      "rating": 5,
+      "text": "Estuvo todo genial, Laura es una persona muy atenta, amable, colaborativa y súper especial. Siempre muy atenta a brindarnos su ayuda, muy servicial, un lugar espectacular para descansar y un ambiente maravilloso.",
+      "reviewerName": "Christian",
+      "date": "July 2026"
+    },
+    {
+      "id": "1729039175944011644",
+      "rating": 4,
+      "text": "Muy agradable y cómoda para 6 personas<br/>Laura es una anfitrióna maravillosa, atenta, amable y muy cálida",
+      "reviewerName": "Fresia Fernanda",
+      "date": "July 2026"
+    },
+    {
+      "id": "1723275922664518341",
+      "rating": 5,
+      "text": "Muy amables, pendientes y excelente anfitriona",
+      "reviewerName": "Mauricio",
+      "date": "July 2026"
+    },
+    {
+      "id": "1718153724142897969",
+      "rating": 5,
+      "text": "Disfrutamos muchísimo nuestra estancia. El lugar es cómodo, bonito, tranquilo y perfecto para un descanso total. Nuestros hijos estuvieron muy felices y nuestra mascota también fue muy bienvenida. Sin duda, una experiencia para repetir. ¡Muchas gracias!",
+      "reviewerName": "Lorena",
+      "date": "June 2026"
+    },
+    {
+      "id": "1708862300517945954",
+      "rating": 3,
+      "text": "Buena casa sin embargo no había utensilios de aseo y había polvo en la casa",
+      "reviewerName": "Andres Steven",
+      "date": "June 2026"
+    },
+    {
+      "id": "1706575443201159585",
+      "rating": 5,
+      "text": "Excelente lugar y fue muy flexible con nuestra hora de llegada",
+      "reviewerName": "Gabriela",
+      "date": "June 2026"
+    },
+    {
+      "id": "1703820000879528581",
+      "rating": 5,
+      "text": "Es un lugar mágico, perfecto para desconectarse , Laura siempre estuvo pendiente y fue súper amable, nos encanto y claramente volveremos.",
+      "reviewerName": "Vanessa",
+      "date": "June 2026"
+    },
+    {
+      "id": "1692791832697992458",
+      "rating": 5,
+      "text": "Lugar agradable y tranquilo, siempre serviciales, la comida muy rica y casero.super recomendado.",
+      "reviewerName": "Bivian",
+      "date": "May 2026"
+    },
+    {
+      "id": "1688553233432087099",
+      "rating": 5,
+      "text": "Muchas gracias Laura por tu  hospitalidad y atención, es un lugar maravilloso, la descripción se queda corta, sin lugar a dudas muy recomendado.",
+      "reviewerName": "Juan David",
+      "date": "May 2026"
+    },
+    {
+      "id": "1682806784188233729",
+      "rating": 5,
+      "text": "El lugar permite un descanso de desconexion y tranquilidad inmersos en la naturaleza. Laura es atenta y facilita la alimentación.  Lo recomiendo",
+      "reviewerName": "Elizabeth",
+      "date": "May 2026"
+    },
+    {
+      "id": "1672676279879511159",
+      "rating": 5,
+      "text": "Villa Tata es un espacio muy agradable, acogedor y encantador. El servicio super 10 de 10, la comida muy rica y siempre muy pendiente de lo que el huésped pueda necesitar. La finca es preciosa y un lujo estar entre la naturaleza. Super recomendada.",
+      "reviewerName": "Catalina",
+      "date": "April 2026"
+    },
+    {
+      "id": "1669053521254927490",
+      "rating": 5,
+      "text": "El alojamiento es ideal para compartir con familia y amigos descanzo y muy agradecidos lo recomiendo 100%.<br/>volveré..!!",
+      "reviewerName": "Gloria Holdinely",
+      "date": "April 2026"
+    },
+    {
+      "id": "1662462554720093897",
+      "rating": 5,
+      "text": "Para celebrar el cumpleaños número 60 de mi padre lo que más anhelaba era encontrar un lugar completo, único y especial para compartir con mi familia, y en Villa Tata lo encontré...un alojamiento maravilloso que superó ampliamente nuestras expectativas, agradezco con mi corazón las experiencias vividas en cada lugar de este alojamiento: la piscina fue increíble para refrescarse con ese clima perfecto;  la fogata un lugar que nos permitió en medio de la noche bailar y cantar; la zona de juegos nos permitió disfrutar entre risas y alegría... la tranquilidad, la comodidad, la paz, la privacidad, lo acogedor del lugar y en especial la atención de Laura que siempre estuvo atenta y dispuesta a que cada momento fuera perfecto, realmente un lugar inolvidable, al que sin duda volveremos porque nos faltó tiempo para disfrutar toas las experiencias que Villa Tata puede brindar...Nuevamente mil gracias por todo, no podré estar más agradecida porque mi papá logró estar feliz en un día tan especial.",
+      "reviewerName": "Karen",
+      "date": "April 2026"
+    }
+  ]
 }
