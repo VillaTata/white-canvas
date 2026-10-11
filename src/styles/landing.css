@@ -1,4 +1,5 @@
 /* Landing page specific styles */
+@reference "../index.css";
 
 .landing-h2 {
   @apply text-4xl md:text-5xl font-semibold text-center text-white;

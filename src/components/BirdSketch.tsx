@@ -1,5 +1,15 @@
 import { useEffect, useRef } from "react";
-import p5 from "p5";
+
+interface Color {
+  r: number;
+  g: number;
+  b: number;
+}
+
+interface Point {
+  x: number;
+  y: number;
+}
 
 interface Butterfly {
   x: number;
@@ -9,240 +19,387 @@ interface Butterfly {
   size: number;
   wingPhase: number;
   wingSpeed: number;
-  trail: { x: number; y: number }[];
+  trail: Point[];
   targetVy: number;
   turnTimer: number;
-  color1: { r: number; g: number; b: number };
-  color2: { r: number; g: number; b: number };
+  color1: Color;
+  color2: Color;
   wobble: number;
+}
+
+const randomBetween = (min: number, max: number) =>
+  Math.random() * (max - min) + min;
+
+const colorWithAlpha = (color: Color, alpha: number, shade = 1) =>
+  `rgba(${Math.round(color.r * shade)}, ${Math.round(color.g * shade)}, ${Math.round(color.b * shade)}, ${alpha / 255})`;
+
+function drawPolygon(
+  context: CanvasRenderingContext2D,
+  points: Point[],
+  fillColor: string,
+  strokeColor: string
+) {
+  context.beginPath();
+  context.moveTo(points[0].x, points[0].y);
+  for (let index = 1; index < points.length; index++) {
+    const point = points[index];
+    context.lineTo(point.x, point.y);
+  }
+  context.closePath();
+  context.fillStyle = fillColor;
+  context.fill();
+  context.strokeStyle = strokeColor;
+  context.stroke();
+}
+
+function drawButterfly(
+  context: CanvasRenderingContext2D,
+  butterfly: Butterfly,
+  wing: number
+) {
+  const size = butterfly.size;
+  const wingOpen = Math.abs(wing);
+  const upperWingHeight = size * 1.1 * wingOpen;
+  const lowerWingHeight = size * 0.75 * wingOpen;
+  const firstColor = butterfly.color1;
+  const secondColor = butterfly.color2;
+
+  context.save();
+  context.translate(butterfly.x, butterfly.y);
+  context.rotate(Math.atan2(butterfly.vy, butterfly.vx));
+
+  context.beginPath();
+  context.ellipse(0, 0, size * 0.45, size * 0.09, 0, 0, Math.PI * 2);
+  context.fillStyle = "rgba(40, 35, 30, 0.78)";
+  context.fill();
+
+  context.beginPath();
+  context.moveTo(size * 0.4, 0);
+  context.lineTo(size * 0.8, -size * 0.35);
+  context.moveTo(size * 0.4, 0);
+  context.lineTo(size * 0.8, size * 0.35);
+  context.strokeStyle = "rgba(40, 35, 30, 0.59)";
+  context.lineWidth = 0.8;
+  context.stroke();
+
+  context.beginPath();
+  context.ellipse(size * 0.8, -size * 0.35, size * 0.05, size * 0.05, 0, 0, Math.PI * 2);
+  context.ellipse(size * 0.8, size * 0.35, size * 0.05, size * 0.05, 0, 0, Math.PI * 2);
+  context.fillStyle = "rgba(40, 35, 30, 0.47)";
+  context.fill();
+
+  context.lineWidth = 0.8;
+  drawPolygon(
+    context,
+    [
+      { x: size * 0.2, y: -size * 0.06 },
+      { x: size * 0.5, y: -upperWingHeight * 0.8 },
+      { x: size * 0.1, y: -upperWingHeight },
+      { x: -size * 0.3, y: -upperWingHeight * 0.6 },
+      { x: -size * 0.2, y: -size * 0.06 },
+    ],
+    colorWithAlpha(firstColor, 180),
+    colorWithAlpha(firstColor, 100, 0.6)
+  );
+  drawPolygon(
+    context,
+    [
+      { x: size * 0.2, y: size * 0.06 },
+      { x: size * 0.5, y: upperWingHeight * 0.8 },
+      { x: size * 0.1, y: upperWingHeight },
+      { x: -size * 0.3, y: upperWingHeight * 0.6 },
+      { x: -size * 0.2, y: size * 0.06 },
+    ],
+    colorWithAlpha(firstColor, 180),
+    colorWithAlpha(firstColor, 100, 0.6)
+  );
+
+  drawPolygon(
+    context,
+    [
+      { x: -size * 0.1, y: -size * 0.05 },
+      { x: -size * 0.15, y: -lowerWingHeight * 0.9 },
+      { x: -size * 0.5, y: -lowerWingHeight },
+      { x: -size * 0.5, y: -size * 0.05 },
+    ],
+    colorWithAlpha(secondColor, 160),
+    colorWithAlpha(secondColor, 80, 0.6)
+  );
+  drawPolygon(
+    context,
+    [
+      { x: -size * 0.1, y: size * 0.05 },
+      { x: -size * 0.15, y: lowerWingHeight * 0.9 },
+      { x: -size * 0.5, y: lowerWingHeight },
+      { x: -size * 0.5, y: size * 0.05 },
+    ],
+    colorWithAlpha(secondColor, 160),
+    colorWithAlpha(secondColor, 80, 0.6)
+  );
+
+  context.beginPath();
+  context.ellipse(
+    size * 0.15,
+    -upperWingHeight * 0.5,
+    size * 0.125,
+    size * 0.1,
+    0,
+    0,
+    Math.PI * 2
+  );
+  context.ellipse(
+    size * 0.15,
+    upperWingHeight * 0.5,
+    size * 0.125,
+    size * 0.1,
+    0,
+    0,
+    Math.PI * 2
+  );
+  context.fillStyle = colorWithAlpha({ r: 255, g: 255, b: 255 }, 60 * wingOpen);
+  context.fill();
+
+  context.beginPath();
+  context.ellipse(
+    -size * 0.25,
+    -lowerWingHeight * 0.5,
+    size * 0.075,
+    size * 0.06,
+    0,
+    0,
+    Math.PI * 2
+  );
+  context.ellipse(
+    -size * 0.25,
+    lowerWingHeight * 0.5,
+    size * 0.075,
+    size * 0.06,
+    0,
+    0,
+    Math.PI * 2
+  );
+  context.fillStyle = "rgba(0, 0, 0, 0.16)";
+  context.fill();
+
+  context.restore();
 }
 
 const BirdSketch = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const p5Ref = useRef<p5 | null>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    const container = containerRef.current;
+    const canvas = container?.ownerDocument.createElement("canvas");
+    const context = canvas?.getContext("2d");
+    if (!container || !canvas || !context) {
+      console.error("No se pudo inicializar el canvas de la animación del hero.");
+      return;
+    }
 
-    const sketch = (p: p5) => {
-      const butterflies: Butterfly[] = [];
-      const NUM = 18;
-      const TRAIL_LENGTH = 20;
-      let attractPoint: { x: number; y: number; timer: number } | null = null;
+    canvas.setAttribute("aria-hidden", "true");
+    canvas.style.display = "block";
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    container.appendChild(canvas);
 
-      const palettes = [
-        { r: 220, g: 120, b: 50 },   // orange monarch
-        { r: 240, g: 200, b: 60 },   // yellow
-        { r: 180, g: 80, b: 160 },   // purple
-        { r: 60, g: 160, b: 200 },   // blue morpho
-        { r: 200, g: 60, b: 80 },    // red
-        { r: 100, g: 180, b: 80 },   // green
-        { r: 240, g: 140, b: 180 },  // pink
-      ];
+    const palettes: Color[] = [
+      { r: 220, g: 120, b: 50 },
+      { r: 240, g: 200, b: 60 },
+      { r: 180, g: 80, b: 160 },
+      { r: 60, g: 160, b: 200 },
+      { r: 200, g: 60, b: 80 },
+      { r: 100, g: 180, b: 80 },
+      { r: 240, g: 140, b: 180 },
+    ];
+    const butterflies: Butterfly[] = [];
+    const trailLength = 20;
+    let width = 0;
+    let height = 0;
+    let frameCount = 0;
+    let animationFrame: number | null = null;
+    let attractPoint: (Point & { timer: number }) | null = null;
+    let isInViewport = !("IntersectionObserver" in window);
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-      p.setup = () => {
-        const canvas = p.createCanvas(
-          containerRef.current!.offsetWidth,
-          containerRef.current!.offsetHeight
-        );
-        canvas.style("display", "block");
+    const canAnimate = () =>
+      isInViewport && !document.hidden && !reducedMotion.matches;
 
-        for (let i = 0; i < NUM; i++) {
-          const x = p.random(p.width);
-          const y = p.random(p.height * 0.6);
-          const c1 = palettes[Math.floor(p.random(palettes.length))];
-          const c2 = palettes[Math.floor(p.random(palettes.length))];
+    const resizeCanvas = () => {
+      width = container.clientWidth;
+      height = container.clientHeight;
+      if (width === 0 || height === 0) return;
+
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(width * pixelRatio);
+      canvas.height = Math.round(height * pixelRatio);
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+      if (butterflies.length === 0) {
+        for (let index = 0; index < 18; index++) {
+          const x = randomBetween(0, width);
+          const y = randomBetween(0, height * 0.6);
           butterflies.push({
-            x, y,
-            vx: p.random(0.5, 1.4) * (p.random() > 0.5 ? 1 : -1),
-            vy: p.random(-0.3, 0.3),
-            size: p.random(8, 16),
-            wingPhase: p.random(p.TWO_PI),
-            wingSpeed: p.random(0.1, 0.2),
-            trail: Array.from({ length: TRAIL_LENGTH }, () => ({ x, y })),
+            x,
+            y,
+            vx: randomBetween(0.5, 1.4) * (Math.random() > 0.5 ? 1 : -1),
+            vy: randomBetween(-0.3, 0.3),
+            size: randomBetween(8, 16),
+            wingPhase: randomBetween(0, Math.PI * 2),
+            wingSpeed: randomBetween(0.1, 0.2),
+            trail: Array.from({ length: trailLength }, () => ({ x, y })),
             targetVy: 0,
-            turnTimer: p.random(40, 150),
-            color1: c1,
-            color2: c2,
-            wobble: p.random(0.02, 0.05),
+            turnTimer: randomBetween(40, 150),
+            color1: palettes[Math.floor(Math.random() * palettes.length)],
+            color2: palettes[Math.floor(Math.random() * palettes.length)],
+            wobble: randomBetween(0.02, 0.05),
           });
         }
-      };
+      }
+    };
 
-      const drawButterfly = (b: Butterfly, wing: number) => {
-        const s = b.size;
-        const angle = p.atan2(b.vy, b.vx);
-        const wingOpen = Math.abs(wing); // 0 to 1, wing openness
+    const drawFrame = () => {
+      animationFrame = null;
+      if (!canAnimate()) return;
 
-        p.push();
-        p.translate(b.x, b.y);
-        p.rotate(angle);
+      context.clearRect(0, 0, width, height);
+      frameCount++;
 
-        // Body
-        p.noStroke();
-        p.fill(40, 35, 30, 200);
-        p.ellipse(0, 0, s * 0.9, s * 0.18);
+      if (attractPoint) {
+        attractPoint.timer--;
+        if (attractPoint.timer <= 0) attractPoint = null;
+      }
 
-        // Antennae
-        p.stroke(40, 35, 30, 150);
-        p.strokeWeight(0.8);
-        p.line(s * 0.4, 0, s * 0.8, -s * 0.35);
-        p.line(s * 0.4, 0, s * 0.8, s * 0.35);
-        // Antenna tips
-        p.fill(40, 35, 30, 120);
-        p.noStroke();
-        p.ellipse(s * 0.8, -s * 0.35, s * 0.1, s * 0.1);
-        p.ellipse(s * 0.8, s * 0.35, s * 0.1, s * 0.1);
+      for (const butterfly of butterflies) {
+        butterfly.turnTimer--;
+        if (butterfly.turnTimer <= 0) {
+          butterfly.targetVy = randomBetween(-0.8, 0.8);
+          butterfly.vx += randomBetween(-0.3, 0.3);
+          butterfly.turnTimer = randomBetween(30, 120);
+        }
 
-        // Upper wings (larger)
-        const upperWingH = s * 1.1 * wingOpen;
-        p.fill(b.color1.r, b.color1.g, b.color1.b, 180);
-        p.stroke(b.color1.r * 0.6, b.color1.g * 0.6, b.color1.b * 0.6, 100);
-        p.strokeWeight(0.8);
-
-        // Top upper wing
-        p.beginShape();
-        p.vertex(s * 0.2, -s * 0.06);
-        p.vertex(s * 0.5, -upperWingH * 0.8);
-        p.vertex(s * 0.1, -upperWingH);
-        p.vertex(-s * 0.3, -upperWingH * 0.6);
-        p.vertex(-s * 0.2, -s * 0.06);
-        p.endShape(p.CLOSE);
-
-        // Bottom upper wing
-        p.beginShape();
-        p.vertex(s * 0.2, s * 0.06);
-        p.vertex(s * 0.5, upperWingH * 0.8);
-        p.vertex(s * 0.1, upperWingH);
-        p.vertex(-s * 0.3, upperWingH * 0.6);
-        p.vertex(-s * 0.2, s * 0.06);
-        p.endShape(p.CLOSE);
-
-        // Lower wings (smaller, rounder)
-        const lowerWingH = s * 0.75 * wingOpen;
-        p.fill(b.color2.r, b.color2.g, b.color2.b, 160);
-        p.stroke(b.color2.r * 0.6, b.color2.g * 0.6, b.color2.b * 0.6, 80);
-
-        // Top lower wing
-        p.beginShape();
-        p.vertex(-s * 0.1, -s * 0.05);
-        p.vertex(-s * 0.15, -lowerWingH * 0.9);
-        p.vertex(-s * 0.5, -lowerWingH);
-        p.vertex(-s * 0.5, -s * 0.05);
-        p.endShape(p.CLOSE);
-
-        // Bottom lower wing
-        p.beginShape();
-        p.vertex(-s * 0.1, s * 0.05);
-        p.vertex(-s * 0.15, lowerWingH * 0.9);
-        p.vertex(-s * 0.5, lowerWingH);
-        p.vertex(-s * 0.5, s * 0.05);
-        p.endShape(p.CLOSE);
-
-        // Wing spots/patterns
-        p.noStroke();
-        p.fill(255, 255, 255, 60 * wingOpen);
-        p.ellipse(s * 0.15, -upperWingH * 0.5, s * 0.25, s * 0.2);
-        p.ellipse(s * 0.15, upperWingH * 0.5, s * 0.25, s * 0.2);
-
-        p.fill(0, 0, 0, 40 * wingOpen);
-        p.ellipse(-s * 0.25, -lowerWingH * 0.5, s * 0.15, s * 0.12);
-        p.ellipse(-s * 0.25, lowerWingH * 0.5, s * 0.15, s * 0.12);
-
-        p.pop();
-      };
-
-      p.draw = () => {
-        p.clear();
+        butterfly.vy += (butterfly.targetVy - butterfly.vy) * 0.04;
 
         if (attractPoint) {
-          attractPoint.timer--;
-          if (attractPoint.timer <= 0) attractPoint = null;
-        }
-
-        for (const b of butterflies) {
-          // Erratic direction changes (butterfly-like)
-          b.turnTimer--;
-          if (b.turnTimer <= 0) {
-            b.targetVy = p.random(-0.8, 0.8);
-            b.vx += p.random(-0.3, 0.3);
-            b.turnTimer = p.random(30, 120);
-          }
-
-          b.vy += (b.targetVy - b.vy) * 0.04;
-
-          // Attract toward click
-          if (attractPoint) {
-            const dx = attractPoint.x - b.x;
-            const dy = attractPoint.y - b.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            const force = 0.03;
-            b.vx += (dx / (dist + 1)) * force;
-            b.vy += (dy / (dist + 1)) * force;
-            const speed = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
-            if (speed > 3) {
-              b.vx = (b.vx / speed) * 3;
-              b.vy = (b.vy / speed) * 3;
-            }
-          }
-
-          // Flutter wobble
-          const wobX = p.sin(p.frameCount * b.wobble + b.wingPhase) * 0.4;
-          const wobY = p.cos(p.frameCount * b.wobble * 1.3 + b.wingPhase) * 0.3;
-
-          b.x += b.vx + wobX;
-          b.y += b.vy + wobY;
-
-          // Wrap & bounds
-          if (b.x > p.width + 30) b.x = -30;
-          if (b.x < -30) b.x = p.width + 30;
-          if (b.y > p.height * 0.7) b.targetVy = -Math.abs(b.targetVy) - 0.3;
-          if (b.y < 20) b.targetVy = Math.abs(b.targetVy) + 0.3;
-
-          // Clamp base speed
-          const spd = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
-          if (spd < 0.4) {
-            b.vx = (b.vx / (spd + 0.01)) * 0.5;
-          }
-
-          // Trail
-          b.trail.push({ x: b.x, y: b.y });
-          if (b.trail.length > TRAIL_LENGTH) b.trail.shift();
-
-          // Draw trail with butterfly color
-          for (let i = 1; i < b.trail.length; i++) {
-            const t = i / b.trail.length;
-            const alpha = t * 25;
-            p.stroke(b.color1.r, b.color1.g, b.color1.b, alpha);
-            p.strokeWeight(t * 1.0);
-            p.line(b.trail[i - 1].x, b.trail[i - 1].y, b.trail[i].x, b.trail[i].y);
-          }
-
-          // Wing flap
-          const wing = p.sin(p.frameCount * b.wingSpeed + b.wingPhase);
-
-          drawButterfly(b, wing);
-        }
-      };
-
-      p.mousePressed = () => {
-        attractPoint = { x: p.mouseX, y: p.mouseY, timer: 180 };
-      };
-
-      p.windowResized = () => {
-        if (containerRef.current) {
-          p.resizeCanvas(
-            containerRef.current.offsetWidth,
-            containerRef.current.offsetHeight
+          const dx = attractPoint.x - butterfly.x;
+          const dy = attractPoint.y - butterfly.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          butterfly.vx += (dx / (distance + 1)) * 0.03;
+          butterfly.vy += (dy / (distance + 1)) * 0.03;
+          const speed = Math.sqrt(
+            butterfly.vx * butterfly.vx + butterfly.vy * butterfly.vy
           );
+          if (speed > 3) {
+            butterfly.vx = (butterfly.vx / speed) * 3;
+            butterfly.vy = (butterfly.vy / speed) * 3;
+          }
         }
+
+        const wobbleX =
+          Math.sin(frameCount * butterfly.wobble + butterfly.wingPhase) * 0.4;
+        const wobbleY =
+          Math.cos(
+            frameCount * butterfly.wobble * 1.3 + butterfly.wingPhase
+          ) * 0.3;
+        butterfly.x += butterfly.vx + wobbleX;
+        butterfly.y += butterfly.vy + wobbleY;
+
+        if (butterfly.x > width + 30) butterfly.x = -30;
+        if (butterfly.x < -30) butterfly.x = width + 30;
+        if (butterfly.y > height * 0.7) {
+          butterfly.targetVy = -Math.abs(butterfly.targetVy) - 0.3;
+        }
+        if (butterfly.y < 20) {
+          butterfly.targetVy = Math.abs(butterfly.targetVy) + 0.3;
+        }
+
+        const speed = Math.sqrt(
+          butterfly.vx * butterfly.vx + butterfly.vy * butterfly.vy
+        );
+        if (speed < 0.4) {
+          butterfly.vx = (butterfly.vx / (speed + 0.01)) * 0.5;
+        }
+
+        butterfly.trail.push({ x: butterfly.x, y: butterfly.y });
+        if (butterfly.trail.length > trailLength) butterfly.trail.shift();
+
+        for (let index = 1; index < butterfly.trail.length; index++) {
+          const trailPosition = index / butterfly.trail.length;
+          context.beginPath();
+          context.moveTo(
+            butterfly.trail[index - 1].x,
+            butterfly.trail[index - 1].y
+          );
+          context.lineTo(
+            butterfly.trail[index].x,
+            butterfly.trail[index].y
+          );
+          context.strokeStyle = colorWithAlpha(
+            butterfly.color1,
+            trailPosition * 25
+          );
+          context.lineWidth = trailPosition;
+          context.stroke();
+        }
+
+        const wing = Math.sin(
+          frameCount * butterfly.wingSpeed + butterfly.wingPhase
+        );
+        drawButterfly(context, butterfly, wing);
+      }
+
+      animationFrame = window.requestAnimationFrame(drawFrame);
+    };
+
+    const updatePlayback = () => {
+      if (canAnimate() && animationFrame === null) {
+        animationFrame = window.requestAnimationFrame(drawFrame);
+      } else if (!canAnimate() && animationFrame !== null) {
+        window.cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+      }
+    };
+
+    const handleClick = (event: MouseEvent) => {
+      const bounds = canvas.getBoundingClientRect();
+      attractPoint = {
+        x: event.clientX - bounds.left,
+        y: event.clientY - bounds.top,
+        timer: 180,
       };
     };
 
-    p5Ref.current = new p5(sketch, containerRef.current);
+    const handleVisibilityChange = () => updatePlayback();
+    const handleMotionPreferenceChange = () => updatePlayback();
+    const resizeObserver =
+      typeof ResizeObserver === "undefined"
+        ? null
+        : new ResizeObserver(resizeCanvas);
+    const intersectionObserver =
+      typeof IntersectionObserver === "undefined"
+        ? null
+        : new IntersectionObserver(([entry]) => {
+            isInViewport = entry.isIntersecting;
+            updatePlayback();
+          });
+
+    resizeCanvas();
+    resizeObserver?.observe(container);
+    intersectionObserver?.observe(container);
+    window.addEventListener("resize", resizeCanvas);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    reducedMotion.addEventListener("change", handleMotionPreferenceChange);
+    canvas.addEventListener("click", handleClick);
+    updatePlayback();
 
     return () => {
-      p5Ref.current?.remove();
+      resizeObserver?.disconnect();
+      intersectionObserver?.disconnect();
+      window.removeEventListener("resize", resizeCanvas);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      reducedMotion.removeEventListener("change", handleMotionPreferenceChange);
+      canvas.removeEventListener("click", handleClick);
+      if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
+      canvas.remove();
     };
   }, []);
 
@@ -251,6 +408,7 @@ const BirdSketch = () => {
       ref={containerRef}
       className="absolute inset-0"
       style={{ zIndex: 0 }}
+      aria-hidden="true"
     />
   );
 };

@@ -1,3 +1,5 @@
+import BirdSketch from "@/components/BirdSketch";
+
 interface HeroSectionProps {
   textVisible: boolean;
 }
@@ -7,30 +9,33 @@ const HeroSection = ({ textVisible }: HeroSectionProps) => (
     id="top"
     className="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6"
   >
-    <h1
-      className={`text-5xl md:text-7xl font-bold text-white drop-shadow-lg transition-all duration-1000 ${
-        textVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-      }`}
-      style={{
-        textShadow: "0 4px 20px rgba(0,0,0,0.6)",
-        WebkitTextStroke: "1.5px black",
-        paintOrder: "stroke fill",
-      }}
-    >
-      Finca Villa Tata
-    </h1>
-    <h2
-      className={`mt-4 max-w-2xl text-lg md:text-2xl text-white/90 font-bold transition-all duration-1000 delay-300 ${
-        textVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-      }`}
-      style={{
-        textShadow: "0 2px 10px rgba(0,0,0,0.5)",
-        WebkitTextStroke: "1px black",
-        paintOrder: "stroke fill",
-      }}
-    >
-      Un espacio para disfrutar en familia del campo, los animales y la naturaleza.
-    </h2>
+    <BirdSketch />
+    <div className="relative z-10">
+      <h1
+        className={`text-5xl md:text-7xl font-bold text-white drop-shadow-lg transition-all duration-1000 ${
+          textVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+        }`}
+        style={{
+          textShadow: "0 4px 20px rgba(0,0,0,0.6)",
+          WebkitTextStroke: "1.5px black",
+          paintOrder: "stroke fill",
+        }}
+      >
+        Finca Villa Tata
+      </h1>
+      <h2
+        className={`mt-4 max-w-2xl text-lg md:text-2xl text-white/90 font-bold transition-all duration-1000 delay-300 ${
+          textVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+        }`}
+        style={{
+          textShadow: "0 2px 10px rgba(0,0,0,0.5)",
+          WebkitTextStroke: "1px black",
+          paintOrder: "stroke fill",
+        }}
+      >
+        Un espacio para disfrutar en familia del campo, los animales y la naturaleza.
+      </h2>
+    </div>
   </section>
 );
 

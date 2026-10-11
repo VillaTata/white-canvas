@@ -1,9 +1,67 @@
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
 const targetReviewCount = 21;
 const apiUrl = "https://api.stayapi.com/v1/airbnb/listing/reviews";
+
+function isReview(value) {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    typeof value.id === "string" &&
+    Number.isInteger(value.rating) &&
+    value.rating >= 1 &&
+    value.rating <= 5 &&
+    typeof value.text === "string" &&
+    value.text.trim().length > 0 &&
+    typeof value.reviewerName === "string" &&
+    value.reviewerName.trim().length > 0 &&
+    (typeof value.date === "string" || value.date === null)
+  );
+}
+
+function isReviewsPayload(value) {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    Number.isInteger(value.totalCount) &&
+    value.totalCount >= 0 &&
+    Array.isArray(value.reviews) &&
+    value.reviews.length > 0 &&
+    value.totalCount >= value.reviews.length &&
+    value.reviews.every(isReview)
+  );
+}
+
+async function readCachedReviews(filePath) {
+  let contents;
+  try {
+    contents = await readFile(filePath, "utf8");
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      "code" in error &&
+      error.code === "ENOENT"
+    ) {
+      return { payload: null, reason: "the cache file does not exist" };
+    }
+    throw error;
+  }
+
+  let payload;
+  try {
+    payload = JSON.parse(contents);
+  } catch {
+    return { payload: null, reason: "the cache file is not valid JSON" };
+  }
+
+  if (!isReviewsPayload(payload)) {
+    return { payload: null, reason: "the cache file has no usable reviews" };
+  }
+
+  return { payload };
+}
 
 export async function fetchAirbnbReviews({
   apiKey,
@@ -50,6 +108,7 @@ export async function fetchAirbnbReviews({
       payload.success !== true ||
       !Array.isArray(payload.reviews) ||
       !Number.isInteger(payload.total_count) ||
+      payload.total_count < 0 ||
       typeof payload.has_more !== "boolean"
     ) {
       throw new Error("StayAPI returned an invalid reviews response");
@@ -98,18 +157,53 @@ export async function fetchAirbnbReviews({
   return { reviews: allReviews.slice(0, limit), totalCount };
 }
 
-async function main() {
-  const { reviews, totalCount } = await fetchAirbnbReviews({
-    apiKey: process.env.STAYAPI_API_KEY,
-    listingId: process.env.AIRBNB_LISTING_ID,
-  });
+export async function main({
+  apiKey = process.env.STAYAPI_API_KEY,
+  listingId = process.env.AIRBNB_LISTING_ID,
+  fetchImpl = fetch,
+  outputPath = resolve("public/reviews.json"),
+  logger = console,
+} = {}) {
+  let payload;
+  let usingCachedReviews = false;
+
+  try {
+    const result = await fetchAirbnbReviews({
+      apiKey,
+      listingId,
+      fetchImpl,
+    });
+    payload = { totalCount: result.totalCount, reviews: result.reviews };
+    if (!isReviewsPayload(payload)) {
+      throw new Error("StayAPI returned no usable reviews");
+    }
+  } catch (error) {
+    const cached = await readCachedReviews(outputPath);
+    if (!cached.payload) {
+      const reason = error instanceof Error ? error.message : String(error);
+      throw new Error(
+        `Unable to refresh Airbnb reviews (${reason}); no valid fallback is available at ${outputPath}: ${cached.reason}.`,
+        { cause: error }
+      );
+    }
+
+    payload = cached.payload;
+    usingCachedReviews = true;
+    const reason = error instanceof Error ? error.message : String(error);
+    logger.warn(
+      `WARNING: StayAPI update failed (${reason}); using ${payload.reviews.length} cached reviews of ${payload.totalCount}. The cached reviews may be outdated.`
+    );
+  }
 
   await writeFile(
-    resolve("public/reviews.json"),
-    `${JSON.stringify({ totalCount, reviews }, null, 2)}\n`,
+    outputPath,
+    `${JSON.stringify(payload, null, 2)}\n`,
   );
 
-  console.log(`Generated public/reviews.json with ${reviews.length} of ${totalCount} reviews`);
+  logger.log(
+    `Generated ${outputPath} with ${payload.reviews.length} of ${payload.totalCount} reviews${usingCachedReviews ? " (cached fallback)" : ""}`
+  );
+  return { ...payload, source: usingCachedReviews ? "cache" : "api" };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {

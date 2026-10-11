@@ -60,6 +60,40 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Project checks
+
+Use Node.js 22 or 24+ for development and builds. Tailwind CSS 4 targets
+Safari 16.4+, Chrome 111+, and Firefox 128+.
+
+Run the automated tests, TypeScript check, lint, and production build locally with:
+
+```sh
+npm audit
+npm test
+npm run typecheck
+npm run lint
+npm run build
+```
+
+The GitHub Pages workflow runs tests, type checking, and lint before building and
+deploying the site.
+
+## Gallery images
+
+Place original images in their category folders under `src/assets/galeria/`. Then
+run `npm run gallery:optimize` and include the generated files under
+`src/assets/galeria-optimizada/` in the commit. The script creates 640 px
+thumbnails and 1600 px images in WebP format for the gallery and lightbox.
+Run `npm run og-image:generate` to create the social preview image from the
+site background photo.
+
+## Airbnb reviews
+
+The GitHub Pages workflow refreshes `public/reviews.json` with the
+`STAYAPI_API_KEY` repository secret and keeps the last valid copy in the Actions
+cache. If StayAPI is unavailable, the build uses that copy and logs a warning;
+if no valid copy exists, the build fails rather than publishing empty reviews.
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.

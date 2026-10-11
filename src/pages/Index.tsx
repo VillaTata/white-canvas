@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import "@/styles/landing.css";
 
-import BirdSketch from "@/components/BirdSketch";
 import Navbar from "@/components/landing/Navbar";
 import HeroSection from "@/components/landing/HeroSection";
 import FincaSection from "@/components/landing/FincaSection";
@@ -35,8 +34,6 @@ const Index = () => {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
         style={{ backgroundImage: `url(${background})` }}
       />
-
-      <BirdSketch />
 
       {/* Floating logo intro */}
       <img

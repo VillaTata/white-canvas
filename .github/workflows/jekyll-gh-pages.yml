@@ -30,15 +30,32 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - name: Install dependencies
         run: npm ci
+      - name: Verify dependencies, tests, types, and lint
+        run: |
+          npm audit
+          npm test
+          npm run typecheck
+          npm run lint
+      - name: Restore last valid Airbnb reviews
+        uses: actions/cache/restore@v4
+        with:
+          path: public/reviews.json
+          key: airbnb-reviews-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: airbnb-reviews-
       - name: Fetch Airbnb reviews
         run: npm run reviews:fetch
         env:
           STAYAPI_API_KEY: ${{ secrets.STAYAPI_API_KEY }}
           AIRBNB_LISTING_ID: "1335775644190168406"
+      - name: Save last valid Airbnb reviews
+        uses: actions/cache/save@v4
+        with:
+          path: public/reviews.json
+          key: airbnb-reviews-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Build site
         run: npm run build
       - name: Setup Pages

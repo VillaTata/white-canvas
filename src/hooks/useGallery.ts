@@ -1,27 +1,69 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 
-const zonasComunesImages = import.meta.glob(
-  "@/assets/galeria/zonas comunes/*.{jpg,jpeg,png,JPG,JPEG,PNG}",
+export interface GalleryImage {
+  thumbnail: string;
+  full: string;
+}
+
+const galleryFilenameCollator = new Intl.Collator("es", {
+  numeric: true,
+  sensitivity: "base",
+});
+
+const zonasComunesThumbnails = import.meta.glob<string>(
+  "@/assets/galeria-optimizada/zonas comunes/*-640.webp",
   { eager: true, import: "default" }
 );
-const paisajesAnimalesImages = import.meta.glob(
-  "@/assets/galeria/paisajes y animales/*.{jpg,jpeg,png,JPG,JPEG,PNG}",
+const zonasComunesFullImages = import.meta.glob<string>(
+  "@/assets/galeria-optimizada/zonas comunes/*-1600.webp",
   { eager: true, import: "default" }
 );
-const cabanaImages = import.meta.glob(
-  "@/assets/galeria/cabana/*.{jpg,jpeg,png,JPG,JPEG,PNG}",
+const paisajesAnimalesThumbnails = import.meta.glob<string>(
+  "@/assets/galeria-optimizada/paisajes y animales/*-640.webp",
   { eager: true, import: "default" }
 );
-const apartaestudioImages = import.meta.glob(
-  "@/assets/galeria/apartaestudio/*.{jpg,jpeg,png,JPG,JPEG,PNG}",
+const paisajesAnimalesFullImages = import.meta.glob<string>(
+  "@/assets/galeria-optimizada/paisajes y animales/*-1600.webp",
+  { eager: true, import: "default" }
+);
+const cabanaThumbnails = import.meta.glob<string>(
+  "@/assets/galeria-optimizada/cabana/*-640.webp",
+  { eager: true, import: "default" }
+);
+const cabanaFullImages = import.meta.glob<string>(
+  "@/assets/galeria-optimizada/cabana/*-1600.webp",
+  { eager: true, import: "default" }
+);
+const apartaestudioThumbnails = import.meta.glob<string>(
+  "@/assets/galeria-optimizada/apartaestudio/*-640.webp",
+  { eager: true, import: "default" }
+);
+const apartaestudioFullImages = import.meta.glob<string>(
+  "@/assets/galeria-optimizada/apartaestudio/*-1600.webp",
   { eager: true, import: "default" }
 );
 
+function createGallery(
+  thumbnails: Record<string, string>,
+  fullImages: Record<string, string>
+): GalleryImage[] {
+  return Object.entries(thumbnails)
+    .sort(([firstPath], [secondPath]) =>
+      galleryFilenameCollator.compare(firstPath, secondPath)
+    )
+    .map(([thumbnailPath, thumbnail]) => {
+      const fullPath = thumbnailPath.replace("-640.webp", "-1600.webp");
+      const full = fullImages[fullPath];
+      if (!full) throw new Error(`Missing full-size gallery image for ${thumbnailPath}`);
+      return { thumbnail, full };
+    });
+}
+
 const galleries = {
-  zonas: Object.values(zonasComunesImages).sort() as string[],
-  paisajes: Object.values(paisajesAnimalesImages).sort() as string[],
-  cabana: Object.values(cabanaImages).sort() as string[],
-  apartaestudio: Object.values(apartaestudioImages).sort() as string[],
+  zonas: createGallery(zonasComunesThumbnails, zonasComunesFullImages),
+  paisajes: createGallery(paisajesAnimalesThumbnails, paisajesAnimalesFullImages),
+  cabana: createGallery(cabanaThumbnails, cabanaFullImages),
+  apartaestudio: createGallery(apartaestudioThumbnails, apartaestudioFullImages),
 };
 
 export type GalleryTab = "zonas" | "paisajes" | "cabana" | "apartaestudio";
@@ -30,7 +72,7 @@ export function useGallery() {
   const [activeTab, setActiveTab] = useState<GalleryTab>("zonas");
   const [animateGallery, setAnimateGallery] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [activeGallery, setActiveGallery] = useState<string[]>([]);
+  const [activeGallery, setActiveGallery] = useState<GalleryImage[]>([]);
   const touchStartX = useRef<number | null>(null);
 
   const currentGallery = galleries[activeTab];
@@ -43,7 +85,7 @@ export function useGallery() {
     }, 200);
   }, []);
 
-  const openImage = useCallback((gallery: string[], index: number) => {
+  const openImage = useCallback((gallery: GalleryImage[], index: number) => {
     setActiveGallery(gallery);
     setSelectedIndex(index);
   }, []);
@@ -68,7 +110,6 @@ export function useGallery() {
       if (selectedIndex === null) return;
       if (e.key === "ArrowRight") nextImage();
       if (e.key === "ArrowLeft") prevImage();
-      if (e.key === "Escape") closeModal();
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
