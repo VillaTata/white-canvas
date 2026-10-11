@@ -11,35 +11,35 @@ const galleryFilenameCollator = new Intl.Collator("es", {
 });
 
 const zonasComunesThumbnails = import.meta.glob<string>(
-  "@/assets/galeria-optimizada/zonas comunes/*-640.webp",
+  "../assets/galeria-optimizada/zonas comunes/*-640.webp",
   { eager: true, import: "default" }
 );
 const zonasComunesFullImages = import.meta.glob<string>(
-  "@/assets/galeria-optimizada/zonas comunes/*-1600.webp",
+  "../assets/galeria-optimizada/zonas comunes/*-1600.webp",
   { eager: true, import: "default" }
 );
 const paisajesAnimalesThumbnails = import.meta.glob<string>(
-  "@/assets/galeria-optimizada/paisajes y animales/*-640.webp",
+  "../assets/galeria-optimizada/paisajes y animales/*-640.webp",
   { eager: true, import: "default" }
 );
 const paisajesAnimalesFullImages = import.meta.glob<string>(
-  "@/assets/galeria-optimizada/paisajes y animales/*-1600.webp",
+  "../assets/galeria-optimizada/paisajes y animales/*-1600.webp",
   { eager: true, import: "default" }
 );
 const cabanaThumbnails = import.meta.glob<string>(
-  "@/assets/galeria-optimizada/cabana/*-640.webp",
+  "../assets/galeria-optimizada/cabana/*-640.webp",
   { eager: true, import: "default" }
 );
 const cabanaFullImages = import.meta.glob<string>(
-  "@/assets/galeria-optimizada/cabana/*-1600.webp",
+  "../assets/galeria-optimizada/cabana/*-1600.webp",
   { eager: true, import: "default" }
 );
 const apartaestudioThumbnails = import.meta.glob<string>(
-  "@/assets/galeria-optimizada/apartaestudio/*-640.webp",
+  "../assets/galeria-optimizada/apartaestudio/*-640.webp",
   { eager: true, import: "default" }
 );
 const apartaestudioFullImages = import.meta.glob<string>(
-  "@/assets/galeria-optimizada/apartaestudio/*-1600.webp",
+  "../assets/galeria-optimizada/apartaestudio/*-1600.webp",
   { eager: true, import: "default" }
 );
 

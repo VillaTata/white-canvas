@@ -1,4 +1,16 @@
 import { forwardRef } from "react";
+import {
+  Bird,
+  CookingPot,
+  Droplets,
+  Flame,
+  Gamepad2,
+  ParkingSquare,
+  Target,
+  Volleyball,
+  Waves,
+  Wifi,
+} from "lucide-react";
 import fincaBg from "@/assets/finca.jpeg";
 
 interface FincaSectionProps {
@@ -18,6 +30,21 @@ const cards = [
     title: "Experiencia",
     description: "Ideal para escapadas, descanso o celebraciones especiales.",
   },
+];
+
+const amenities = [
+  { label: "Piscina", icon: Waves },
+  { label: "Zona de juegos", icon: Gamepad2 },
+  { label: "Cancha de volleyball", icon: Volleyball },
+  { label: "Zona de fogata", icon: Flame },
+  { label: "WiFi", icon: Wifi },
+  { label: "Río a 5 minutos", icon: Droplets },
+  { label: "Zona BBQ", icon: CookingPot },
+  { label: "Cancha de tejo", icon: Target },
+  { label: "Parqueadero", icon: ParkingSquare },
+  { label: "Avistamiento de aves", icon: Bird },
+  { label: "Fuente", icon: Waves },
+  { label: "Lagos tipo estanque", icon: Droplets },
 ];
 
 const FincaSection = forwardRef<HTMLElement, FincaSectionProps>(
@@ -40,6 +67,38 @@ const FincaSection = forwardRef<HTMLElement, FincaSectionProps>(
           La Finca
           <span className="landing-h2-accent" />
         </h2>
+
+        <div className="mx-auto mb-12 max-w-4xl text-center">
+          <p className="mb-4 text-lg leading-relaxed text-white/90">
+            Desconéctate del ruido de la ciudad y reconecta con lo esencial en
+            Villa Tata, un refugio de naturaleza y tranquilidad donde
+            practicamos turismo responsable y sostenible.
+          </p>
+          <p className="mb-8 text-lg leading-relaxed text-white/90">
+            Aquí vivirás una experiencia auténtica, rodeado de paisajes
+            naturales y sabores locales. Disfruta de nuestra gastronomía
+            orgánica, preparada con productos cultivados directamente en la
+            finca.
+          </p>
+
+          <h3 className="mb-4 text-lg font-semibold text-white">
+            Contamos con
+          </h3>
+          <ul className="grid grid-cols-2 gap-3 text-left sm:grid-cols-3">
+            {amenities.map(({ label, icon: Icon }) => (
+              <li
+                key={label}
+                className="group flex items-center gap-3 rounded-lg border border-white/10 bg-white/10 p-4 text-white/90 transition-colors hover:bg-white/20"
+              >
+                <Icon
+                  aria-hidden="true"
+                  className="h-6 w-6 shrink-0 text-green-300 transition-transform duration-300 group-hover:-translate-y-1 group-hover:rotate-6 motion-reduce:transition-none"
+                />
+                <span>{label}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         <div className="grid md:grid-cols-3 gap-10">
           {cards.map((card) => (
