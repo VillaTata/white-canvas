@@ -30,8 +30,24 @@ const isReview = (value: unknown): value is Review => {
   );
 };
 
+const isReviewsPayload = (
+  value: unknown,
+): value is { totalCount: number; reviews: Review[] } => {
+  if (typeof value !== "object" || value === null || !("reviews" in value)) {
+    return false;
+  }
+
+  const payload = value as { totalCount?: unknown; reviews: unknown };
+  return (
+    Number.isInteger(payload.totalCount) &&
+    Array.isArray(payload.reviews) &&
+    payload.reviews.every(isReview)
+  );
+};
+
 const ReviewsSection = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [status, setStatus] = useState<ReviewsStatus>("loading");
 
   useEffect(() => {
@@ -48,17 +64,12 @@ const ReviewsSection = () => {
         }
 
         const payload: unknown = await response.json();
-        if (
-          typeof payload !== "object" ||
-          payload === null ||
-          !("reviews" in payload) ||
-          !Array.isArray(payload.reviews) ||
-          !payload.reviews.every(isReview)
-        ) {
+        if (!isReviewsPayload(payload)) {
           throw new Error("The published reviews file has an invalid format");
         }
 
         setReviews(payload.reviews);
+        setTotalCount(payload.totalCount);
         setStatus("ready");
       } catch (error) {
         if (controller.signal.aborted) return;
@@ -98,49 +109,54 @@ const ReviewsSection = () => {
         )}
 
         {status === "ready" && reviews.length > 0 && (
-          <Carousel
-            opts={{ align: "start", slidesToScroll: "auto" }}
-            className="mx-auto w-full px-10"
-          >
-            <CarouselContent>
-              {reviews.map((review) => (
-                <CarouselItem
-                  key={review.id}
-                  className="basis-[min(100%,22rem)] self-start"
-                >
-                  <article className="flex flex-col rounded-xl border border-white/15 bg-white/10 p-6 shadow-lg backdrop-blur-sm">
-                    <div
-                      className="mb-4 flex gap-1 text-amber-300"
-                      aria-label={`${review.rating} de 5 estrellas`}
-                    >
-                      {Array.from({ length: 5 }, (_, index) => (
-                        <span key={index} aria-hidden="true">
-                          {index < review.rating ? "★" : "☆"}
-                        </span>
-                      ))}
-                    </div>
-                    <blockquote className="whitespace-pre-line leading-relaxed text-white/90">
-                      “{review.text}”
-                    </blockquote>
-                    <footer className="mt-6 border-t border-white/15 pt-4">
-                      <p className="font-semibold">{review.reviewerName}</p>
-                      {review.date && (
-                        <p className="mt-1 text-sm text-white/60">{review.date}</p>
-                      )}
-                    </footer>
-                  </article>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious
-              aria-label="Reseña anterior"
-              className="left-0 border-white/30 bg-black/30 text-white hover:bg-white/20 hover:text-white"
-            />
-            <CarouselNext
-              aria-label="Siguiente reseña"
-              className="right-0 border-white/30 bg-black/30 text-white hover:bg-white/20 hover:text-white"
-            />
-          </Carousel>
+          <>
+            <p className="mb-6 text-center text-sm text-white/60">
+              {reviews.length} de {totalCount} reseñas disponibles
+            </p>
+            <Carousel
+              opts={{ align: "start", slidesToScroll: "auto" }}
+              className="mx-auto w-full px-10"
+            >
+              <CarouselContent>
+                {reviews.map((review) => (
+                  <CarouselItem
+                    key={review.id}
+                    className="basis-[min(100%,22rem)] self-start"
+                  >
+                    <article className="flex flex-col rounded-xl border border-white/15 bg-white/10 p-6 shadow-lg backdrop-blur-sm">
+                      <div
+                        className="mb-4 flex gap-1 text-amber-300"
+                        aria-label={`${review.rating} de 5 estrellas`}
+                      >
+                        {Array.from({ length: 5 }, (_, index) => (
+                          <span key={index} aria-hidden="true">
+                            {index < review.rating ? "★" : "☆"}
+                          </span>
+                        ))}
+                      </div>
+                      <blockquote className="whitespace-pre-line leading-relaxed text-white/90">
+                        “{review.text}”
+                      </blockquote>
+                      <footer className="mt-6 border-t border-white/15 pt-4">
+                        <p className="font-semibold">{review.reviewerName}</p>
+                        {review.date && (
+                          <p className="mt-1 text-sm text-white/60">{review.date}</p>
+                        )}
+                      </footer>
+                    </article>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious
+                aria-label="Reseña anterior"
+                className="left-0 border-white/30 bg-black/30 text-white hover:bg-white/20 hover:text-white"
+              />
+              <CarouselNext
+                aria-label="Siguiente reseña"
+                className="right-0 border-white/30 bg-black/30 text-white hover:bg-white/20 hover:text-white"
+              />
+            </Carousel>
+          </>
         )}
       </div>
     </section>
