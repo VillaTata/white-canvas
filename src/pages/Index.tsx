@@ -6,6 +6,7 @@ import Navbar from "@/components/landing/Navbar";
 import HeroSection from "@/components/landing/HeroSection";
 import FincaSection from "@/components/landing/FincaSection";
 import GaleriaSection from "@/components/landing/GaleriaSection";
+import ReviewsSection from "@/components/landing/ReviewsSection";
 import ReservasSection from "@/components/landing/ReservasSection";
 
 import { useGallery } from "@/hooks/useGallery";
@@ -51,6 +52,7 @@ const Index = () => {
       <HeroSection textVisible={heroTextVisible} />
       <FincaSection ref={finca.ref} visible={finca.visible} />
       <GaleriaSection {...gallery} />
+      <ReviewsSection />
       <ReservasSection />
     </div>
   );

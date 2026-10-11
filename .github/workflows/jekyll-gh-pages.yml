@@ -34,6 +34,11 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
+      - name: Fetch Airbnb reviews
+        run: npm run reviews:fetch
+        env:
+          STAYAPI_API_KEY: ${{ secrets.STAYAPI_API_KEY }}
+          AIRBNB_LISTING_ID: "1335775644190168406"
       - name: Build site
         run: npm run build
       - name: Setup Pages
