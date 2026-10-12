@@ -18,11 +18,11 @@ describe("gallery accessibility", () => {
     expect(
       screen.getByRole("button", { name: "Zonas comunes" })
     ).toHaveAttribute("aria-pressed", "true");
-    expect(
-      screen.getByRole("img", {
-        name: "Zonas comunes de Finca Villa Tata, foto 1",
-      })
-    ).toBeInTheDocument();
+    const firstPhoto = screen.getByRole("img", {
+      name: "Zonas comunes de Finca Villa Tata, foto 1",
+    });
+    expect(firstPhoto).toBeInTheDocument();
+    expect(firstPhoto).toHaveAttribute("draggable", "false");
 
     fireEvent.click(screen.getByRole("button", { name: "Paisajes y animales" }));
 
@@ -132,7 +132,7 @@ describe("gallery accessibility", () => {
       within(dialog).getByRole("img", {
         name: "Zonas comunes de Finca Villa Tata, foto 2",
       })
-    ).toBeInTheDocument();
+    ).toHaveAttribute("draggable", "false");
 
     fireEvent.keyDown(document, { key: "Escape" });
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());

@@ -107,6 +107,7 @@ const GaleriaSection = ({
                   srcSet={`${img.thumbnail} 640w, ${img.full} 1600w`}
                   sizes="(min-width: 768px) 320px, 100vw"
                   alt={`${getTabLabel(activeTab)} de Finca Villa Tata, foto ${index + 1}`}
+                  draggable={false}
                   loading="lazy"
                   decoding="async"
                   className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
@@ -149,6 +150,7 @@ const GaleriaSection = ({
               <img
                 src={activeGallery[selectedIndex].full}
                 alt={`${getTabLabel(activeTab)} de Finca Villa Tata, foto ${selectedIndex + 1}`}
+                draggable={false}
                 className="max-h-full max-w-full rounded-xl object-contain shadow-2xl"
               />
               <button
