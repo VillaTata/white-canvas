@@ -20,6 +20,10 @@ describe("local SEO metadata", () => {
       "@type": "LodgingBusiness",
       name: "Finca Villa Tata",
       url: "https://www.fincavillatata.com/",
+      sameAs: [
+        "https://www.facebook.com/Fincavillatata",
+        "https://www.instagram.com/villatata8/",
+      ],
       telephone: "+573213221252",
       address: {
         addressLocality: "Sasaima",
