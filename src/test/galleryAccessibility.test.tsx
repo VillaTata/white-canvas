@@ -74,7 +74,6 @@ describe("gallery accessibility", () => {
       [
         "Paisajes y animales",
         [
-          "1000076578-640.webp",
           "1000076594-640.webp",
           "1000076595-640.webp",
           "1000076615-640.webp",
@@ -89,6 +88,7 @@ describe("gallery accessibility", () => {
           "1000076591-640.webp",
           "1000076593-640.webp",
           "1000076614-640.webp",
+          "1000076578-640.webp",
         ],
       ],
     ] as const) {

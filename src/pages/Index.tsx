@@ -7,6 +7,7 @@ import FincaSection from "@/components/landing/FincaSection";
 import GaleriaSection from "@/components/landing/GaleriaSection";
 import ReviewsSection from "@/components/landing/ReviewsSection";
 import ReservasSection from "@/components/landing/ReservasSection";
+import ContactoSection from "@/components/landing/ContactoSection";
 
 import { useGallery } from "@/hooks/useGallery";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
@@ -51,6 +52,7 @@ const Index = () => {
       <GaleriaSection {...gallery} />
       <ReviewsSection />
       <ReservasSection />
+      <ContactoSection />
     </div>
   );
 };

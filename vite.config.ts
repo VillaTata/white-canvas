@@ -13,6 +13,9 @@ export default defineConfig(({ mode }) => ({
       overlay: false,
     },
   },
+  build: {
+    manifest: true,
+  },
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

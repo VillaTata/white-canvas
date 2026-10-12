@@ -77,8 +77,9 @@ const FincaSection = forwardRef<HTMLElement, FincaSectionProps>(
         <div className="mx-auto mb-12 max-w-4xl text-center">
           <p className="mb-4 text-xl leading-relaxed text-white/90 md:text-2xl">
             Desconéctate del ruido de la ciudad y reconecta con lo esencial en
-            Villa Tata, un refugio de naturaleza y tranquilidad donde
-            practicamos turismo responsable y sostenible.
+            Villa Tata, en San Bernardo, Sasaima, Cundinamarca: un refugio de
+            naturaleza y tranquilidad donde practicamos turismo responsable y
+            sostenible.
           </p>
           <p className="mb-8 text-xl leading-relaxed text-white/90 md:text-2xl">
             Aquí vivirás una experiencia auténtica, rodeado de paisajes

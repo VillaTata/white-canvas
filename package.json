@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender.mjs",
     "build:dev": "vite build --mode development",
     "reviews:fetch": "node scripts/fetch-airbnb-reviews.mjs",
     "gallery:optimize": "node scripts/optimize-gallery-images.mjs",
